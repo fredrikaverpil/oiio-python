@@ -1,19 +1,22 @@
 # https://aka.ms/yaml
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
 
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-16.04'
+    mac:
+      imageName: 'macos-10.13'
+    windows:
+      imageName: 'vs2017-win2016'
+
+pool:
+  vmImage: $(imageName)
+
 jobs:
 - job: 'Test'
-
-
   strategy:
     matrix:
-      linux:
-        imageName: 'ubuntu-16.04'
-      mac:
-        imageName: 'macos-10.13'
-      windows:
-        imageName: 'vs2017-win2016'
-
       # Python27:
       #   python.version: '2.7'
       Python35:
@@ -22,12 +25,7 @@ jobs:
         python.version: '3.6'
       Python37:
         python.version: '3.7'
-
     # maxParallel: 3
-
-  pool:
-    vmImage: $(imageName)
-
 
   steps:
 
