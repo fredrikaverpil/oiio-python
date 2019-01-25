@@ -1,4 +1,5 @@
 # https://aka.ms/yaml
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
 
 jobs:
 - job: 'Test'
