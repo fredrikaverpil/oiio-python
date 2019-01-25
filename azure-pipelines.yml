@@ -6,36 +6,15 @@ jobs:
 
   strategy:
     matrix:
-      linux:
+      linux-py36:
         imageName: 'ubuntu-16.04'
-        # Python27:
-        #   python.version: '2.7'
-        Python35:
-          python.version: '3.5'
-        Python36:
-          python.version: '3.6'
-        Python37:
-          python.version: '3.7'
-      mac:
+        python.version: '3.6'
+      mac-py36:
         imageName: 'macos-10.13'
-        # Python27:
-        #   python.version: '2.7'
-        Python35:
-          python.version: '3.5'
-        Python36:
-          python.version: '3.6'
-        Python37:
-          python.version: '3.7'
+        python.version: '3.6'
       windows:
         imageName: 'vs2017-win2016'
-        # Python27:
-        #   python.version: '2.7'
-        Python35:
-          python.version: '3.5'
-        Python36:
-          python.version: '3.6'
-        Python37:
-          python.version: '3.7'
+        python.version: '3.6'
     # maxParallel: 3
 
   pool:
