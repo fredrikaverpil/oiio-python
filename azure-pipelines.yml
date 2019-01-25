@@ -50,3 +50,8 @@ jobs:
   # now we use the value, no matter where we got it
   - script: |
       echo The IP address is $(IP_ADDR)
+      
+  # also test python
+  - script: |
+      python --version
+  
