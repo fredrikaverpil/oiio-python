@@ -77,8 +77,8 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Show contents of oiio portfile.cmake
   - powershell: |
-      (Get-Content c:\temp\test.txt).replace('-DUSE_PYTHON=OFF', '-DUSE_PYTHON=ON') | Set-Content c:/vcpkg/ports/openimageio/portfile.cmake
-      (Get-Content c:\temp\test.txt).replace('-DBUILD_MISSING_PYBIND11=OFF', '-DBUILD_MISSING_PYBIND11=ON') | Set-Content c:/vcpkg/ports/openimageio/portfile.cmake
+      choco install -y sed
+      sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' /tmp/foo
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Edit contents of oiio portfile.cmake
   - powershell: |
