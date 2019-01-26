@@ -72,7 +72,7 @@ jobs:
       .\vcpkg update
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install the Microsoft "vcpkg" manager
-   - powershell: |
+  - powershell: |
       cat C:/vcpkg/ports/openimageio/portfile.cmake
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Show contents of oiio portfile.cmake
