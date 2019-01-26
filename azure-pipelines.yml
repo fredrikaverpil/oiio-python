@@ -41,13 +41,13 @@ jobs:
 #     condition: eq( variables['Agent.OS'], 'Windows_NT' )
 #     displayName: Test Python executable path
 
-  - bash: |
-      git clone https://github.com/OpenImageIO/oiio.git
-      cd oiio
-      pwd
-      git fetch --all --tags --prune
-      git checkout tags/$(oiio.tag)
-    displayName: Download oiio-$(oiio.tag)
+#   - bash: |
+#       git clone https://github.com/OpenImageIO/oiio.git
+#       cd oiio
+#       pwd
+#       git fetch --all --tags --prune
+#       git checkout tags/$(oiio.tag)
+#     displayName: Download oiio-$(oiio.tag)
 
 #   # Linux
 #   - bash: |
