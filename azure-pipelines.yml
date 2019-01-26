@@ -1,7 +1,8 @@
 # https://aka.ms/yaml
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azdevops&tabs=yaml
-
+# https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
+  
 jobs:
 - job: 'Test'
 
@@ -65,6 +66,8 @@ jobs:
       cd C:/vcpkg
       vcpkg list
       vcpkg install boost:x64-windows
+      vcpkg install openexr:x64-windows
+      vcpkg install tiff:x64-windows
       vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install vcpkg prerequisites
