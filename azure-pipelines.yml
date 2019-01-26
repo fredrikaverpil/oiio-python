@@ -17,6 +17,7 @@ jobs:
       windows-py36:
         imageName: 'vs2017-win2016'
         python.version: '3.6'
+        python.location: 'C:/hostedtoolcache/windows/Python/3.6.4/x64'
         oiio.tag: 'Release-2.0.4'
     # maxParallel: 3
 
@@ -37,7 +38,7 @@ jobs:
       which python
       python -c "import sys; print(sys.executable)"
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Python executable path
+    displayName: Test: Python executable path
 
   - bash: |
       git clone https://github.com/OpenImageIO/oiio.git
@@ -85,7 +86,11 @@ jobs:
       mkdir build
       mkdir build\windows64
       cd build\windows64
-      cmake -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DOPENEXR_ROOT_DIR=C:\oiio\ext -DVERBOSE=1 -DBUILD_MISSING_DEPS=1 ../..
+      cmake -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake \
+        -DPYTHON_INCLUDE_DIR:PATH=$(python.location)/include \
+        -DPYTHON_LIBRARY:FILEPATH=$(python.location)/libs/python36.lib \
+        -DPYTHON_EXECUTABLE:FILEPATH=$(python.location)/python.exe \
+        -DOPENEXR_ROOT_DIR=C:\oiio\ext -DVERBOSE=1 -DBUILD_MISSING_DEPS=1 ../..
       dir c:\projects\oiio
       dir c:\projects\oiio\build
       dir c:\projects\oiio\build\windows64
