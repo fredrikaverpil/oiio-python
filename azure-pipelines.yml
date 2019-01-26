@@ -7,12 +7,12 @@ jobs:
 
   strategy:
     matrix:
-      linux-py36:
-        imageName: 'ubuntu-16.04'
-        python.version: '3.6'
-      mac-py36:
-        imageName: 'macos-10.13'
-        python.version: '3.6'
+#       linux-py36:
+#         imageName: 'ubuntu-16.04'
+#         python.version: '3.6'
+#       mac-py36:
+#         imageName: 'macos-10.13'
+#         python.version: '3.6'
       windows-py36:
         imageName: 'vs2017-win2016'
         python.version: '3.6'
@@ -43,16 +43,19 @@ jobs:
     displayName: Get IP on macOS
   # Windows
   - powershell: |
-      Set-Variable -Name IPADDR -Value ((Get-NetIPAddress | ?{ $_.AddressFamily -eq "IPv4" -and !($_.IPAddress -match "169") -and !($_.IPaddress -match "127") } | Select-Object -First 1).IPAddress)
-      Write-Host "##vso[task.setvariable variable=IP_ADDR]$IPADDR"
+      cd C:/ 
+      git clone https://github.com/Microsoft/vcpkg.git 
+      cd vcpkg 
+      .\bootstrap-vcpkg.bat 
+      .\vcpkg integrate install
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Get IP on Windows
 
-  # now we use the value, no matter where we got it
-  - script: |
-      echo The IP address is $(IP_ADDR)
+#   # now we use the value, no matter where we got it
+#   - script: |
+#       echo The IP address is $(IP_ADDR)
       
-  # also test python
-  - script: |
-      python --version
+#   # also test python
+#   - script: |
+#       python --version
   
