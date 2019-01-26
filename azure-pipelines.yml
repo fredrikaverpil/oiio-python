@@ -56,15 +56,16 @@ jobs:
       cd C:/ 
       git clone https://github.com/Microsoft/vcpkg.git 
       cd vcpkg 
-      .\bootstrap-vcpkg.bat 
-      .\vcpkg integrate install
+      bootstrap-vcpkg.bat 
+      vcpkg integrate install
+      vcpkg update
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install the Microsoft "vcpkg" manager
   - powershell: |
       cd C:/vcpkg
-      .\vcpkg list
-      .\vcpkg install boost
-      .\vcpkg list
+      vcpkg list
+      vcpkg install boost:x64-windows
+      vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install vcpkg prerequisites
 
