@@ -19,6 +19,7 @@ jobs:
         python.version: '3.6'
         python.location: 'C:/hostedtoolcache/windows/Python/3.6.4/x64'
         oiio.tag: 'Release-2.0.4'
+        oiio.sha512: 'f6de620fba52e871f546e129c2d4b1792ff20504ab4219d8098be48cb552fd70a7064e8d487b9e1ad6473deda57f116e7f0185d7778ef3c5da7c077415288356'
     # maxParallel: 3
 
   pool:
@@ -78,7 +79,12 @@ jobs:
     displayName: Show contents of oiio portfile.cmake
   - powershell: |
       choco install -y sed
+      sed -i '/REF Release-/c\REF Release-2.0.4' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/SHA512/c\SHA512 f6de620fba52e871f546e129c2d4b1792ff20504ab4219d8098be48cb552fd70a7064e8d487b9e1ad6473deda57f116e7f0185d7778ef3c5da7c077415288356' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/HEAD_REF/c\HEAD_REF release' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' C:/vcpkg/ports/openimageio/portfile.cmake
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Edit contents of oiio portfile.cmake
   - powershell: |
