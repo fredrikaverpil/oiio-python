@@ -32,10 +32,10 @@ jobs:
 
   - bash: |
       git clone https://github.com/OpenImageIO/oiio.git
-      cd OpenImageIO
+      cd oiio
       git fetch --all --tags --prune
       git checkout tags/'$(python.version)'
-    displayName: Download OpenImageIO '$(python.version)'
+    displayName: Download oiio-'$(python.version)'
 
   # Linux
   - bash: |
