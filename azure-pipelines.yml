@@ -78,7 +78,7 @@ jobs:
     displayName: Show contents of oiio portfile.cmake
   - powershell: |
       choco install -y sed
-      sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' /tmp/foo
+      sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' C:/vcpkg/ports/openimageio/portfile.cmake
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Edit contents of oiio portfile.cmake
   - powershell: |
