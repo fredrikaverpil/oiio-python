@@ -34,8 +34,8 @@ jobs:
       git clone https://github.com/OpenImageIO/oiio.git
       cd oiio
       git fetch --all --tags --prune
-      git checkout tags/'$(python.version)'
-    displayName: Download oiio-'$(oiio.tag)'
+      git checkout tags/$(oiio.tag)
+    displayName: Download oiio-$(oiio.tag)
 
   # Linux
   - bash: |
