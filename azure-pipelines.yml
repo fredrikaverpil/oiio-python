@@ -60,13 +60,13 @@ jobs:
       .\vcpkg integrate install
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install the Microsoft "vcpkg" manager
-
   - powershell: |
-      .\bootstrap-vcpkg.bat 
+      cd C:/vcpkg
+      .\vcpkg list
+      .\vcpkg install boost
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Try running "vcpkg list"
-
+    displayName: Install vcpkg prerequisites
 
 
 #   # now we use the value, no matter where we got it
