@@ -72,6 +72,10 @@ jobs:
       .\vcpkg update
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install the Microsoft "vcpkg" manager
+   - powershell: |
+      cat C:/vcpkg/ports/openimageio/portfile.cmake
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Show contents of oiio portfile.cmake
   - powershell: |
       cd C:/vcpkg
       .\vcpkg list
@@ -81,22 +85,6 @@ jobs:
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install prerequisites
-  - powershell: |
-      cd C:/oiio
-      mkdir build
-      mkdir build\windows64
-      cd build\windows64
-      cmake -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake \
-        -DPYTHON_INCLUDE_DIR:PATH=$(python.location)/include \
-        -DPYTHON_LIBRARY:FILEPATH=$(python.location)/libs/python36.lib \
-        -DPYTHON_EXECUTABLE:FILEPATH=$(python.location)/python.exe \
-        -DOPENEXR_ROOT_DIR=C:\oiio\ext -DVERBOSE=1 -DBUILD_MISSING_DEPS=1 ../..
-      dir c:\projects\oiio
-      dir c:\projects\oiio\build
-      dir c:\projects\oiio\build\windows64
-      cmake --build . --config %CONFIGURATION%
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Build oiio
 
 
 #   # now we use the value, no matter where we got it
