@@ -95,7 +95,6 @@ jobs:
   - powershell: |
       cd C:/vcpkg
       .\vcpkg list
-      .\vcpkg install boost:x64-windows
       .\vcpkg install openexr:x64-windows
       .\vcpkg install tiff:x64-windows
       .\vcpkg install pybind11:x64-windows
