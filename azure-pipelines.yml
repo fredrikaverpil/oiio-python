@@ -34,6 +34,7 @@ jobs:
   - bash: |
       git clone https://github.com/OpenImageIO/oiio.git
       cd oiio
+      pwd
       git fetch --all --tags --prune
       git checkout tags/$(oiio.tag)
     displayName: Download oiio-$(oiio.tag)
@@ -70,7 +71,11 @@ jobs:
       vcpkg install tiff:x64-windows
       vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Install vcpkg prerequisites
+    displayName: Install prerequisites
+  - powershell: |
+      echo "Build here"
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Build oiio
 
 
 #   # now we use the value, no matter where we got it
