@@ -103,6 +103,7 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install prerequisites
   - powershell: |
+      $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd C:/vcpkg
       .\vcpkg list
       .\vcpkg install openimageio:x64-windows
