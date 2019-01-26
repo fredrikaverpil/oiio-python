@@ -35,7 +35,7 @@ jobs:
       cd oiio
       git fetch --all --tags --prune
       git checkout tags/'$(python.version)'
-    displayName: Download oiio-'$(python.version)'
+    displayName: Download oiio-'$(oiio.tag)'
 
   # Linux
   - bash: |
