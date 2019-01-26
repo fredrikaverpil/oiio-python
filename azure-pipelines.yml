@@ -58,9 +58,15 @@ jobs:
       cd vcpkg 
       .\bootstrap-vcpkg.bat 
       .\vcpkg integrate install
-      .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install the Microsoft "vcpkg" manager
+
+  - powershell: |
+      .\vcpkg list
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Try running "vcpkg list"
+
+
 
 #   # now we use the value, no matter where we got it
 #   - script: |
