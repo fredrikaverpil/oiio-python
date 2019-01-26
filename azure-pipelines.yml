@@ -30,6 +30,13 @@ jobs:
     inputs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
+      addToPath: true
+
+  - script:  |
+      choco install -y which
+      which python
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: which python
 
   - bash: |
       git clone https://github.com/OpenImageIO/oiio.git
@@ -73,7 +80,15 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install prerequisites
   - powershell: |
-      echo "Build here"
+      cd C:/oiio
+      mkdir build
+      mkdir build\windows64
+      cd build\windows64
+      cmake -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DPYTHON_INCLUDE_DIR:PATH=%PYTHON_DIR%/include -DPYTHON_LIBRARY:FILEPATH=%PYTHON_DIR%/libs/python27.lib -DPYTHON_EXECUTABLE:FILEPATH=%PYTHON_DIR%/python.exe -DCMAKE_LIBRARY_PATH=%CMAKE_LIBRARY_PATH% -DCMAKE_INCLUDE_PATH=%CMAKE_INCLUDE_PATH%  -DCMAKE_PREFIX_PATH=%CMAKE_PREFIX_PATH% -DOPENEXR_ROOT_DIR=C:\projects\oiio\ext -DVERBOSE=1 -DBUILD_MISSING_DEPS=1 ../..
+      dir c:\projects\oiio
+      dir c:\projects\oiio\build
+      dir c:\projects\oiio\build\windows64
+      cmake --build . --config %CONFIGURATION%
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Build oiio
 
