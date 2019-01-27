@@ -24,7 +24,7 @@ jobs:
     oiio.tag: 'Release-2.0.4'
     oiio.head_ref: 'master'
     oiio.sha512: 'f6de620fba52e871f546e129c2d4b1792ff20504ab4219d8098be48cb552fd70a7064e8d487b9e1ad6473deda57f116e7f0185d7778ef3c5da7c077415288356'
-    pypackage.version: '0.1.dev0'
+    pypackage.version: '2.0.4-$(Build.BuildId)'
     pypackage.os_name: 'Microsoft :: Windows'
 
   pool:
