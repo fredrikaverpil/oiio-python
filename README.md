@@ -7,7 +7,7 @@
 
 ## Download build artifacts
 
-For each build, click the "Summary", and you will see the build artifacts (Python wheels).
+For each Azure Pipelines build, click the "Summary", and you will see the build artifacts (Python wheels).
 
 ## Notes
 
