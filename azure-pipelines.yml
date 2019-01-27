@@ -135,7 +135,13 @@ jobs:
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Copy files into oiio Python package
-
+  - powershell: |
+      cd $(Agent.BuildDirectory)/s/src
+      pip install -U setuptools wheel
+      python setup.py bdist_wheel
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Build wheel
 
 #   # now we use the value, no matter where we got it
 #   - script: |
