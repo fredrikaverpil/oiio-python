@@ -10,7 +10,7 @@ from setuptools import find_packages
 
 setup(
     name="oiio",
-    version="VERSION",
+    version="PACKAGE_VERSION",
     description="OpenImageIO Python package",
     url="https://github.com/fredrikaverpil/oiio-python",
 
