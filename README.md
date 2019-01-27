@@ -11,4 +11,5 @@ For each build, click the "Summary", and you will see the build artifacts (Pytho
 
 ## Notes
 
+- [OpenImageIO/oiio](https://github.com/OpenImageIO/oiio), note the `.travis.yml` and `appveyor.yml`
 - [vcpkg/ports/openimageio](https://github.com/Microsoft/vcpkg/tree/master/ports/openimageio)
