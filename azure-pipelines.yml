@@ -40,13 +40,14 @@ jobs:
     displayName: Where are we?
 
   - powershell: |
+      choco install -y tree
+      tree
       cd $(Agent.BuildDirectory)
+      dir
+      tree
       cd src
       cd oiio
       cp $(Agent.BuildDirectory)/* .
-      cd $(Agent.BuildDirectory)
-      choco install -y tree
-      tree
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Make wheel
 
