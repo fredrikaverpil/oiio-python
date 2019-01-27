@@ -4,16 +4,15 @@
 # https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
 
 jobs:
-- job: 'windows'
+- job: 'oiio'
 
   strategy:
     matrix:
       windows-py36:
         python.version: '3.6'
-      windows-py37:
-        python.version: '3.7'
+    #   windows-py37:
+    #     python.version: '3.7'
     # maxParallel: 3
-
 
   variables:
     azure.vm_image: 'vs2017-win2016'
@@ -29,6 +28,7 @@ jobs:
 
   steps:
 
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
   - task: UsePythonVersion@0
     inputs:
       versionSpec: '$(python.version)'
@@ -58,6 +58,7 @@ jobs:
 
   # Make edits to vcpkg oiio portfile.cmake
   - powershell: |
+      echo "------------- BEFORE EDITS -------------"
       cat C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/REF Release-/c\REF $(oiio.ref)' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/SHA512/c\SHA512 $(oiio.sha512)' C:/vcpkg/ports/openimageio/portfile.cmake
@@ -67,6 +68,7 @@ jobs:
       sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i 's/LICENSE/LICENSE.md/g' C:/vcpkg/ports/openimageio/portfile.cmake
+      echo "------------- AFTER EDITS -------------"
       cat C:/vcpkg/ports/openimageio/portfile.cmake
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Modify oiio portfile.cmake
@@ -104,8 +106,8 @@ jobs:
 
   # Copy files into Python package
   - powershell: |
-      cp -r C:\vcpkg\installed\x64-windows\lib\python$(python.version)\site-packages\*.pyd $(Agent.BuildDirectory)/s/src/oiio
-      cp -r C:\vcpkg\installed\x64-windows\bin\*.dll $(Agent.BuildDirectory)/s/src/oiio
+      cp -r -v C:\vcpkg\installed\x64-windows\lib\python$(python.version)\site-packages\*.pyd $(Agent.BuildDirectory)/s/src/oiio
+      cp -r -v C:\vcpkg\installed\x64-windows\bin\*.dll $(Agent.BuildDirectory)/s/src/oiio
       cd $(Agent.BuildDirectory)/s
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
@@ -120,6 +122,7 @@ jobs:
     displayName: Build wheel
 
   # Publish wheel as build artifact (see "Summary" in Azure Pipelines build)
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/publish-build-artifacts?view=azdevops
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
