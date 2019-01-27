@@ -30,11 +30,12 @@ jobs:
 
   - script:  |
       pwd
-
-      echo "are we here: $(Agent.BuildDirectory) ?"
+      echo "now here: $(Agent.BuildDirectory) ?"
       dir
       choco install -y tree
       cd $(Agent.BuildDirectory)
+      echo "in build folder: $(pwd)"
+      pwd
       tree
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Where are we?
