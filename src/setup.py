@@ -13,8 +13,10 @@ setup(
     version="VERSION",
     description="OpenImageIO Python package",
     url="https://github.com/fredrikaverpil/oiio-python",
+
+    # https://pypi.org/classifiers/
     classifiers=[
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: PYTHON_VERSION",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS_NAME",
     ],
