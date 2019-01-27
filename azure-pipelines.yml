@@ -27,6 +27,12 @@ jobs:
 
 
   steps:
+  
+  - script:  |
+      pwd
+      dir
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Where are we?
 
   - task: UsePythonVersion@0
     inputs:
