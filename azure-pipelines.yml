@@ -29,29 +29,11 @@ jobs:
   steps:
 
   - script:  |
-      pwd
-      echo "now here: $(Agent.BuildDirectory) ?"
-      dir
-      cd $(Agent.BuildDirectory)
+      cd $(Agent.BuildDirectory)/s
       echo "in build folder: $(pwd)"
-      pwd
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Where are we?
-
-  - powershell: |
-      cd $(Agent.BuildDirectory)
-      pwd
-      dir
-      tree /F
-      cd s
-      cd src
-      cd oiio
-      cp -r $(Agent.BuildDirectory)/s/*.md $(Agent.BuildDirectory)/s/src/oiio
-      cd $(Agent.BuildDirectory)
-      tree /F
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Make wheel
 
 
   - task: UsePythonVersion@0
@@ -137,24 +119,29 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio
   - powershell: |
-      choco install -y tree
       cd C:\vcpkg\installed\x64-windows\bin
-      tree
+      tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: oiio bin folder tree
   - powershell: |
-      choco install -y tree
       cd C:\vcpkg\installed\x64-windows\lib\python3.6\site-packages
-      tree
+      tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: oiio site-packages folder tree
+  - powershell: |
+      cp -r C:\vcpkg\installed\x64-windows\lib\python3.6\site-packages\*.pyd $(Agent.BuildDirectory)/s/src/oiio
+      cp -r C:\vcpkg\installed\x64-windows\bin\*.dll $(Agent.BuildDirectory)/s/src/oiio
+      cd $(Agent.BuildDirectory)/s
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Copy files into oiio Python package
 
 
 #   # now we use the value, no matter where we got it
 #   - script: |
 #       echo The IP address is $(IP_ADDR)
-      
+
 #   # also test python
 #   - script: |
 #       python --version
-  
+

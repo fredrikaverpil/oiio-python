@@ -23,6 +23,7 @@ setup(
         # If any package (!) contains ... files, include them:
         "": [
             "*.pyd",
+            "*.dll",
         ]
     },
 )
