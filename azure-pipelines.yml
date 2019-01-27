@@ -32,7 +32,6 @@ jobs:
       pwd
       echo "now here: $(Agent.BuildDirectory) ?"
       dir
-      choco install -y tree
       cd $(Agent.BuildDirectory)
       echo "in build folder: $(pwd)"
       pwd
@@ -41,7 +40,6 @@ jobs:
     displayName: Where are we?
 
   - powershell: |
-      choco install -y tree
       tree
       cd $(Agent.BuildDirectory)
       dir
