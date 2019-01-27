@@ -139,10 +139,17 @@ jobs:
       cd $(Agent.BuildDirectory)/s/src
       sed -i '/s/[VERSION]/0.1.dev0/g' setup.py
       pip install -U setuptools wheel
-      python setup.py bdist_wheel
+      python setup.py bdist_wheel --dist-dir="$(Build.ArtifactStagingDirectory)"
+      cd $(Build.ArtifactStagingDirectory)
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Build wheel
+
+  - task: PublishBuildArtifacts@1
+  inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: drop
+
 
 #   # now we use the value, no matter where we got it
 #   - script: |
