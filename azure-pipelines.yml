@@ -146,9 +146,9 @@ jobs:
     displayName: Build wheel
 
   - task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: drop
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: drop
 
 
 #   # now we use the value, no matter where we got it
