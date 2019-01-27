@@ -13,10 +13,16 @@ setup(
     version="[VERSION]",
     description="[DESCRIPTION]",
     url="https://github.com/fredrikaverpil/oiio-python",
-    packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS dependent",
     ],
+    packages=find_packages(exclude=[]),
+    package_data={
+        # If any package (!) contains ... files, include them:
+        "": [
+            "*.pyd",
+        ]
+    },
 )
