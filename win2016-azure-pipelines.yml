@@ -42,6 +42,17 @@ jobs:
       architecture: 'x64'
       addToPath: true
 
+  # TEST deploy artifact
+  - powershell: |
+      cp -v $(Agent.BuildDirectory)/s/src/*.yml $(Build.ArtifactStagingDirectory)
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Build wheel
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: drop
+
+
 #   - script:  |
 #       choco install -y which
 #       which python
