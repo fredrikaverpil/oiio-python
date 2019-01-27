@@ -16,7 +16,7 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: OS dependent",
+        "Operating System :: OS_NAME",
     ],
     packages=find_packages(exclude=[]),
     package_data={

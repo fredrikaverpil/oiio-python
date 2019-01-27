@@ -28,6 +28,13 @@ jobs:
 
   steps:
 
+  - powershell: |
+      cd $(Agent.BuildDirectory)/s/src
+      sed -i 's/VERSION/0.1.dev0/g' setup.py
+      sed -i 's/OS_VERSION/Microsoft :: Windows/g' setup.py
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Rename variables in setup.py
+
   - script:  |
       cd $(Agent.BuildDirectory)/s
       echo "in build folder: $(pwd)"
@@ -108,7 +115,8 @@ jobs:
     displayName: Copy files into oiio Python package
   - powershell: |
       cd $(Agent.BuildDirectory)/s/src
-      sed -i '/s/VERSION/0.1.dev0/g' setup.py
+      sed -i 's/VERSION/0.1.dev0/g' setup.py
+      sed -i 's/OS_VERSION/Microsoft :: Windows/g' setup.py
       pip install -U setuptools wheel
       python setup.py bdist_wheel --dist-dir="$(Build.ArtifactStagingDirectory)"
       cd $(Build.ArtifactStagingDirectory)
