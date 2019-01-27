@@ -28,12 +28,16 @@ jobs:
 
   steps:
 
-#   - script:  |
-#       pwd
-#       dir
-#       echo "are we here: $(Agent.BuildDirectory) ?"
-#     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-#     displayName: Where are we?
+  - script:  |
+      pwd
+
+      echo "are we here: $(Agent.BuildDirectory) ?"
+      dir
+      choco install -y tree
+      cd $(Agent.BuildDirectory)
+      tree
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Where are we?
 
   - powershell: |
       cd $(Agent.BuildDirectory)/src/oiio
