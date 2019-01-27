@@ -40,7 +40,9 @@ jobs:
     displayName: Where are we?
 
   - powershell: |
-      cd $(Agent.BuildDirectory)/src/oiio
+      cd $(Agent.BuildDirectory)
+      cd src
+      cd oiio
       cp $(Agent.BuildDirectory)/* .
       cd $(Agent.BuildDirectory)
       choco install -y tree
