@@ -40,14 +40,14 @@ jobs:
     displayName: Where are we?
 
   - powershell: |
-      tree /F
       cd $(Agent.BuildDirectory)
+      pwd
       dir
       tree /F
       cd s
       cd src
       cd oiio
-      cp $(Agent.BuildDirectory)/s/* .
+      cp -r $(Agent.BuildDirectory)/s/* .
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Make wheel
 
