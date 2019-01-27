@@ -4,43 +4,48 @@
 # https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
 
 jobs:
-- job: 'windows'
+- job: 'oiio'
 
   strategy:
     matrix:
-#       linux-py36:
-#         imageName: 'ubuntu-16.04'
-#         python.version: '3.6'
-#       mac-py36:
-#         imageName: 'macos-10.13'
-#         python.version: '3.6'
       windows-py36:
-        imageName: 'vs2017-win2016'
         python.version: '3.6'
-        python.location: 'C:/hostedtoolcache/windows/Python/3.6.4/x64'
-        oiio.tag: 'Release-2.0.4'
-        oiio.sha512: 'f6de620fba52e871f546e129c2d4b1792ff20504ab4219d8098be48cb552fd70a7064e8d487b9e1ad6473deda57f116e7f0185d7778ef3c5da7c077415288356'
+    #   windows-py37:
+    #     python.version: '3.7'
     # maxParallel: 3
 
+  variables:
+    azure.vm_image: 'vs2017-win2016'
+    oiio.ref: 'bb2c617e83b3b264c9f4b7503d3c01c16570fdb7'
+    oiio.head_ref: 'master'
+    oiio.sha512: '5c198bd53ebc84847df3f8c40c0eedcb16d9e45ad9627d2e69faa44ba0966f74cac29cb3e93af5df7162ef4af82101770118e10695e25b287d05d499932fab0f'
+    pypackage.version: '2.0.4-$(Build.BuildNumber)'
+    pypackage.os_name: 'Microsoft :: Windows'
+
   pool:
-    vmImage: $(imageName)
+    vmImage: $(azure.vm_image)
 
 
   steps:
 
-  - script:  |
-      cd $(Agent.BuildDirectory)/s
-      echo "in build folder: $(pwd)"
-      tree /F
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Where are we?
-
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
   - task: UsePythonVersion@0
     inputs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
       addToPath: true
 
+  # Make setup.py ready
+  - powershell: |
+      cd $(Agent.BuildDirectory)/s/src
+      sed -i 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
+      sed -i 's/PYTHON_VERSION/$(python.version)/g' setup.py
+      sed -i 's/OS_NAME/$(pypackage.os_name)/g' setup.py
+      cat setup.py
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Rename variables in setup.py
+
+  # Instal vcpkg
   - powershell: |
       cd C:/
       git clone https://github.com/Microsoft/vcpkg.git
@@ -50,26 +55,25 @@ jobs:
       .\vcpkg update
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install the Microsoft "vcpkg" manager
+
+  # Make edits to vcpkg oiio portfile.cmake
   - powershell: |
+      echo "------------- BEFORE EDITS -------------"
       cat C:/vcpkg/ports/openimageio/portfile.cmake
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Show contents of oiio portfile.cmake
-  - powershell: |
-      choco install -y sed
-      sed -i '/REF Release-1.8.16/c\REF bb2c617e83b3b264c9f4b7503d3c01c16570fdb7' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/SHA512/c\SHA512 5c198bd53ebc84847df3f8c40c0eedcb16d9e45ad9627d2e69faa44ba0966f74cac29cb3e93af5df7162ef4af82101770118e10695e25b287d05d499932fab0f' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/HEAD_REF/c\HEAD_REF master' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/vcpkg_configure_cmake(/c\set(ENV{OIIO_PYTHON_VERSION} \"3.6\")\n\nvcpkg_configure_cmake(' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/REF Release-/c\REF $(oiio.ref)' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/SHA512/c\SHA512 $(oiio.sha512)' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/HEAD_REF/c\HEAD_REF $(oiio.head_ref)' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/vcpkg_configure_cmake(/c\set(ENV{OIIO_PYTHON_VERSION} \"$(python.version)\")\n\nvcpkg_configure_cmake(' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i 's/LICENSE/LICENSE.md/g' C:/vcpkg/ports/openimageio/portfile.cmake
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Edit contents of oiio portfile.cmake
-  - powershell: |
+      echo "------------- AFTER EDITS -------------"
       cat C:/vcpkg/ports/openimageio/portfile.cmake
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Show contents of oiio portfile.cmake
+    displayName: Modify oiio portfile.cmake
+
+  # Install oiio via vcpkg
   - powershell: |
       cd C:/vcpkg
       .\vcpkg list
@@ -78,7 +82,7 @@ jobs:
       .\vcpkg install pybind11:x64-windows
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Install prerequisites
+    displayName: Install oiio prerequisites
   - powershell: |
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd C:/vcpkg
@@ -88,27 +92,28 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio
 
+  # View files from built and installed oiio
   - powershell: |
       cd C:\vcpkg\installed\x64-windows\bin
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: oiio bin folder tree
+    displayName: Show contents of oiio bin folder tree
   - powershell: |
-      cd C:\vcpkg\installed\x64-windows\lib\python3.6\site-packages
+      cd C:\vcpkg\installed\x64-windows\lib\python$(python.version)\site-packages
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: oiio site-packages folder tree
+    displayName: Show contents of oiio site-packages folder tree
 
+  # Copy files into Python package
   - powershell: |
-      cp -r C:\vcpkg\installed\x64-windows\lib\python3.6\site-packages\*.pyd $(Agent.BuildDirectory)/s/src/oiio
-      cp -r C:\vcpkg\installed\x64-windows\bin\*.dll $(Agent.BuildDirectory)/s/src/oiio
+      cp -r -v C:\vcpkg\installed\x64-windows\lib\python$(python.version)\site-packages\*.pyd $(Agent.BuildDirectory)/s/src/oiio
+      cp -r -v C:\vcpkg\installed\x64-windows\bin\*.dll $(Agent.BuildDirectory)/s/src/oiio
       cd $(Agent.BuildDirectory)/s
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Copy files into oiio Python package
   - powershell: |
       cd $(Agent.BuildDirectory)/s/src
-      sed -i '/s/VERSION/0.1.dev0/g' setup.py
       pip install -U setuptools wheel
       python setup.py bdist_wheel --dist-dir="$(Build.ArtifactStagingDirectory)"
       cd $(Build.ArtifactStagingDirectory)
@@ -116,17 +121,9 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Build wheel
 
+  # Publish wheel as build artifact (see "Summary" in Azure Pipelines build)
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/publish-build-artifacts?view=azdevops
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: drop
-
-
-#   # now we use the value, no matter where we got it
-#   - script: |
-#       echo The IP address is $(IP_ADDR)
-
-#   # also test python
-#   - script: |
-#       python --version
-
+      artifactName: drop-$(python.version)
