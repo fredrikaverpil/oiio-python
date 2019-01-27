@@ -4,7 +4,7 @@
 # https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
 
 jobs:
-- job: 'Windows builds'
+- job: 'windows'
 
   strategy:
     matrix:
