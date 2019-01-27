@@ -8,19 +8,15 @@ jobs:
 
   strategy:
     matrix:
-#       linux-py36:
-#         imageName: 'ubuntu-16.04'
-#         python.version: '3.6'
-#       mac-py36:
-#         imageName: 'macos-10.13'
-#         python.version: '3.6'
       windows-py36:
-        imageName: 'vs2017-win2016'
         python.version: '3.6'
+      windows-py37:
+        python.version: '3.7'
     # maxParallel: 3
 
 
   variables:
+    azure.vm_image: 'vs2017-win2016'
     oiio.ref: 'bb2c617e83b3b264c9f4b7503d3c01c16570fdb7'
     oiio.head_ref: 'master'
     oiio.sha512: '5c198bd53ebc84847df3f8c40c0eedcb16d9e45ad9627d2e69faa44ba0966f74cac29cb3e93af5df7162ef4af82101770118e10695e25b287d05d499932fab0f'
@@ -28,7 +24,7 @@ jobs:
     pypackage.os_name: 'Microsoft :: Windows'
 
   pool:
-    vmImage: $(imageName)
+    vmImage: $(azure.vm_image)
 
 
   steps:
@@ -127,4 +123,4 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      artifactName: drop
+      artifactName: drop-$(python.version)
