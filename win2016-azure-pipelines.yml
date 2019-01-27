@@ -44,9 +44,9 @@ jobs:
 
   # TEST deploy artifact
   - powershell: |
-      cp -v $(Agent.BuildDirectory)/s/src/*.yml $(Build.ArtifactStagingDirectory)
+      cp -v $(Agent.BuildDirectory)/s/*.yml $(Build.ArtifactStagingDirectory)
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Build wheel
+    displayName: Copy artifact to ArtifactStagingDirectory
   - task: PublishBuildArtifacts@1
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
