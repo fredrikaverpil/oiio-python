@@ -79,9 +79,9 @@ jobs:
     displayName: Show contents of oiio portfile.cmake
   - powershell: |
       choco install -y sed
-      sed -i '/REF Release-/c\REF Release-2.0.4' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/SHA512/c\SHA512 f6de620fba52e871f546e129c2d4b1792ff20504ab4219d8098be48cb552fd70a7064e8d487b9e1ad6473deda57f116e7f0185d7778ef3c5da7c077415288356' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/HEAD_REF/c\HEAD_REF release' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/REF Release-1.8.16/c\bb2c617e83b3b264c9f4b7503d3c01c16570fdb7' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/SHA512/c\SHA512 5c198bd53ebc84847df3f8c40c0eedcb16d9e45ad9627d2e69faa44ba0966f74cac29cb3e93af5df7162ef4af82101770118e10695e25b287d05d499932fab0f' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/HEAD_REF/c\HEAD_REF master' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' C:/vcpkg/ports/openimageio/portfile.cmake
