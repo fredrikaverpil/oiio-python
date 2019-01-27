@@ -51,6 +51,7 @@ jobs:
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: drop
+      publishLocation: Server
 
 
 #   - script:  |
