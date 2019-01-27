@@ -21,9 +21,9 @@ jobs:
 
 
   variables:
-    oiio.tag: 'Release-2.0.4'
+    oiio.ref: 'bb2c617e83b3b264c9f4b7503d3c01c16570fdb7'
     oiio.head_ref: 'master'
-    oiio.sha512: 'f6de620fba52e871f546e129c2d4b1792ff20504ab4219d8098be48cb552fd70a7064e8d487b9e1ad6473deda57f116e7f0185d7778ef3c5da7c077415288356'
+    oiio.sha512: '5c198bd53ebc84847df3f8c40c0eedcb16d9e45ad9627d2e69faa44ba0966f74cac29cb3e93af5df7162ef4af82101770118e10695e25b287d05d499932fab0f'
     pypackage.version: '2.0.4-$(Build.BuildId)'
     pypackage.os_name: 'Microsoft :: Windows'
 
@@ -63,7 +63,7 @@ jobs:
   # Make edits to vcpkg oiio portfile.cmake
   - powershell: |
       cat C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/REF Release-/c\REF $(oiio.tag)' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/REF Release-/c\REF $(oiio.ref)' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/SHA512/c\SHA512 $(oiio.sha512)' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/HEAD_REF/c\HEAD_REF $(oiio.head_ref)' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/vcpkg_configure_cmake(/c\set(ENV{OIIO_PYTHON_VERSION} \"$(python.version)\")\n\nvcpkg_configure_cmake(' C:/vcpkg/ports/openimageio/portfile.cmake
