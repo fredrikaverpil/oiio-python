@@ -31,6 +31,7 @@ jobs:
   - script:  |
       pwd
       dir
+      echo "are we here: $(Agent.BuildDirectory) ?"
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Where are we?
 
