@@ -35,6 +35,16 @@ jobs:
 #     condition: eq( variables['Agent.OS'], 'Windows_NT' )
 #     displayName: Where are we?
 
+  - bash: |
+      cd $(Agent.BuildDirectory)
+      mkdir wheel/oiio
+      cd wheel/oiio
+      echo $null >> __init__.py
+      cp $(Agent.BuildDirectory)/* .
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Make wheel
+
+
   - task: UsePythonVersion@0
     inputs:
       versionSpec: '$(python.version)'
@@ -129,14 +139,7 @@ jobs:
       tree
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: oiio site-packages folder tree
-  - powershell: |
-      $(Agent.BuildDirectory)
-      mkdir wheel/oiio
-      cd wheel/oiio
-      echo $null >> __init__.py
-      pwd
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Make wheel
+
 
 #   # now we use the value, no matter where we got it
 #   - script: |
