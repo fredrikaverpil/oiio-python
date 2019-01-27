@@ -41,6 +41,9 @@ jobs:
       cd wheel/oiio
       echo $null >> __init__.py
       cp $(Agent.BuildDirectory)/* .
+      cd $(Agent.BuildDirectory)
+      choco install -y tree
+      tree
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Make wheel
 
