@@ -1,21 +1,25 @@
 # https://aka.ms/yaml
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azdevops&tabs=yaml
-
+# https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
+  
 jobs:
 - job: 'Test'
 
   strategy:
     matrix:
-      linux-py36:
-        imageName: 'ubuntu-16.04'
-        python.version: '3.6'
-      mac-py36:
-        imageName: 'macos-10.13'
-        python.version: '3.6'
+#       linux-py36:
+#         imageName: 'ubuntu-16.04'
+#         python.version: '3.6'
+#       mac-py36:
+#         imageName: 'macos-10.13'
+#         python.version: '3.6'
       windows-py36:
         imageName: 'vs2017-win2016'
         python.version: '3.6'
+        python.location: 'C:/hostedtoolcache/windows/Python/3.6.4/x64'
+        oiio.tag: 'Release-2.0.4'
+        oiio.sha512: 'f6de620fba52e871f546e129c2d4b1792ff20504ab4219d8098be48cb552fd70a7064e8d487b9e1ad6473deda57f116e7f0185d7778ef3c5da7c077415288356'
     # maxParallel: 3
 
   pool:
@@ -28,31 +32,90 @@ jobs:
     inputs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
+      addToPath: true
 
-  # Linux
-  - bash: |
-      export IPADDR=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
-      echo "##vso[task.setvariable variable=IP_ADDR]$IPADDR"
-    condition: eq( variables['Agent.OS'], 'Linux' )
-    displayName: Get IP on Linux
-  # macOS
-  - bash: |
-      export IPADDR=$(ifconfig | grep 'en0' -A3 | tail -n1 | awk '{print $2}')
-      echo "##vso[task.setvariable variable=IP_ADDR]$IPADDR"
-    condition: eq( variables['Agent.OS'], 'Darwin' )
-    displayName: Get IP on macOS
+#   - script:  |
+#       choco install -y which
+#       which python
+#       python -c "import sys; print(sys.executable)"
+#     condition: eq( variables['Agent.OS'], 'Windows_NT' )
+#     displayName: Test Python executable path
+
+#   - bash: |
+#       git clone https://github.com/OpenImageIO/oiio.git
+#       cd oiio
+#       pwd
+#       git fetch --all --tags --prune
+#       git checkout tags/$(oiio.tag)
+#     displayName: Download oiio-$(oiio.tag)
+
+#   # Linux
+#   - bash: |
+#       export IPADDR=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
+#       echo "##vso[task.setvariable variable=IP_ADDR]$IPADDR"
+#     condition: eq( variables['Agent.OS'], 'Linux' )
+#     displayName: Get IP on Linux
+
+#   # macOS
+#   - bash: |
+#       export IPADDR=$(ifconfig | grep 'en0' -A3 | tail -n1 | awk '{print $2}')
+#       echo "##vso[task.setvariable variable=IP_ADDR]$IPADDR"
+#     condition: eq( variables['Agent.OS'], 'Darwin' )
+#     displayName: Get IP on macOS
+
   # Windows
   - powershell: |
-      Set-Variable -Name IPADDR -Value ((Get-NetIPAddress | ?{ $_.AddressFamily -eq "IPv4" -and !($_.IPAddress -match "169") -and !($_.IPaddress -match "127") } | Select-Object -First 1).IPAddress)
-      Write-Host "##vso[task.setvariable variable=IP_ADDR]$IPADDR"
+      cd C:/ 
+      git clone https://github.com/Microsoft/vcpkg.git 
+      cd vcpkg 
+      .\bootstrap-vcpkg.bat 
+      .\vcpkg integrate install
+      .\vcpkg update
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Get IP on Windows
+    displayName: Install the Microsoft "vcpkg" manager
+  - powershell: |
+      cat C:/vcpkg/ports/openimageio/portfile.cmake
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Show contents of oiio portfile.cmake
+  - powershell: |
+      choco install -y sed
+      sed -i '/REF Release-1.8.16/c\REF bb2c617e83b3b264c9f4b7503d3c01c16570fdb7' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/SHA512/c\SHA512 5c198bd53ebc84847df3f8c40c0eedcb16d9e45ad9627d2e69faa44ba0966f74cac29cb3e93af5df7162ef4af82101770118e10695e25b287d05d499932fab0f' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/HEAD_REF/c\HEAD_REF master' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/vcpkg_configure_cmake(/c\set(ENV{OIIO_PYTHON_VERSION} \"3.6\")\n\nvcpkg_configure_cmake(' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i 's/LICENSE/LICENSE.md/g' C:/vcpkg/ports/openimageio/portfile.cmake
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Edit contents of oiio portfile.cmake
+  - powershell: |
+      cat C:/vcpkg/ports/openimageio/portfile.cmake
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Show contents of oiio portfile.cmake
+  - powershell: |
+      cd C:/vcpkg
+      .\vcpkg list
+      .\vcpkg install openexr:x64-windows
+      .\vcpkg install tiff:x64-windows
+      .\vcpkg install pybind11:x64-windows
+      .\vcpkg list
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Install prerequisites
+  - powershell: |
+      $env:OIIO_PYTHON_VERSION = "$(python.version)"
+      cd C:/vcpkg
+      .\vcpkg list
+      .\vcpkg install openimageio:x64-windows
+      .\vcpkg list
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Install oiio
 
-  # now we use the value, no matter where we got it
-  - script: |
-      echo The IP address is $(IP_ADDR)
+#   # now we use the value, no matter where we got it
+#   - script: |
+#       echo The IP address is $(IP_ADDR)
       
-  # also test python
-  - script: |
-      python --version
+#   # also test python
+#   - script: |
+#       python --version
   
