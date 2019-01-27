@@ -2,9 +2,9 @@
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azdevops&tabs=yaml
 # https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
-  
+
 jobs:
-- job: 'Test'
+- job: 'windows'
 
   strategy:
     matrix:
@@ -28,47 +28,24 @@ jobs:
 
   steps:
 
+  - script:  |
+      cd $(Agent.BuildDirectory)/s
+      echo "in build folder: $(pwd)"
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Where are we?
+
   - task: UsePythonVersion@0
     inputs:
       versionSpec: '$(python.version)'
       architecture: 'x64'
       addToPath: true
 
-#   - script:  |
-#       choco install -y which
-#       which python
-#       python -c "import sys; print(sys.executable)"
-#     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-#     displayName: Test Python executable path
-
-#   - bash: |
-#       git clone https://github.com/OpenImageIO/oiio.git
-#       cd oiio
-#       pwd
-#       git fetch --all --tags --prune
-#       git checkout tags/$(oiio.tag)
-#     displayName: Download oiio-$(oiio.tag)
-
-#   # Linux
-#   - bash: |
-#       export IPADDR=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
-#       echo "##vso[task.setvariable variable=IP_ADDR]$IPADDR"
-#     condition: eq( variables['Agent.OS'], 'Linux' )
-#     displayName: Get IP on Linux
-
-#   # macOS
-#   - bash: |
-#       export IPADDR=$(ifconfig | grep 'en0' -A3 | tail -n1 | awk '{print $2}')
-#       echo "##vso[task.setvariable variable=IP_ADDR]$IPADDR"
-#     condition: eq( variables['Agent.OS'], 'Darwin' )
-#     displayName: Get IP on macOS
-
-  # Windows
   - powershell: |
-      cd C:/ 
-      git clone https://github.com/Microsoft/vcpkg.git 
-      cd vcpkg 
-      .\bootstrap-vcpkg.bat 
+      cd C:/
+      git clone https://github.com/Microsoft/vcpkg.git
+      cd vcpkg
+      .\bootstrap-vcpkg.bat
       .\vcpkg integrate install
       .\vcpkg update
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
@@ -111,11 +88,45 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio
 
+  - powershell: |
+      cd C:\vcpkg\installed\x64-windows\bin
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: oiio bin folder tree
+  - powershell: |
+      cd C:\vcpkg\installed\x64-windows\lib\python3.6\site-packages
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: oiio site-packages folder tree
+
+  - powershell: |
+      cp -r C:\vcpkg\installed\x64-windows\lib\python3.6\site-packages\*.pyd $(Agent.BuildDirectory)/s/src/oiio
+      cp -r C:\vcpkg\installed\x64-windows\bin\*.dll $(Agent.BuildDirectory)/s/src/oiio
+      cd $(Agent.BuildDirectory)/s
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Copy files into oiio Python package
+  - powershell: |
+      cd $(Agent.BuildDirectory)/s/src
+      sed -i '/s/VERSION/0.1.dev0/g' setup.py
+      pip install -U setuptools wheel
+      python setup.py bdist_wheel --dist-dir="$(Build.ArtifactStagingDirectory)"
+      cd $(Build.ArtifactStagingDirectory)
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Build wheel
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: drop
+
+
 #   # now we use the value, no matter where we got it
 #   - script: |
 #       echo The IP address is $(IP_ADDR)
-      
+
 #   # also test python
 #   - script: |
 #       python --version
-  
+
