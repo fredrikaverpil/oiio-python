@@ -9,9 +9,9 @@ from setuptools import setup
 from setuptools import find_packages
 
 setup(
-    name="[PACKAGE_NAME]",
+    name="oiio",
     version="[VERSION]",
-    description="[DESCRIPTION]",
+    description="OpenImageIO Python package",
     url="https://github.com/fredrikaverpil/oiio-python",
     classifiers=[
         "Programming Language :: Python :: 3",
