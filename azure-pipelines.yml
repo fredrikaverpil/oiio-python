@@ -28,12 +28,12 @@ jobs:
 
   steps:
   
-  - script:  |
-      pwd
-      dir
-      echo "are we here: $(Agent.BuildDirectory) ?"
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Where are we?
+#   - script:  |
+#       pwd
+#       dir
+#       echo "are we here: $(Agent.BuildDirectory) ?"
+#     condition: eq( variables['Agent.OS'], 'Windows_NT' )
+#     displayName: Where are we?
 
   - task: UsePythonVersion@0
     inputs:
@@ -129,6 +129,14 @@ jobs:
       tree
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: oiio site-packages folder tree
+  - powershell: |
+      $(Agent.BuildDirectory)
+      mkdir wheel/oiio
+      cd wheel/oiio
+      echo $null >> __init__.py
+      pwd
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Make wheel
 
 #   # now we use the value, no matter where we got it
 #   - script: |
