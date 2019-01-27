@@ -2,7 +2,7 @@
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azdevops&tabs=yaml
 # https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
-  
+
 jobs:
 - job: 'Test'
 
@@ -27,7 +27,7 @@ jobs:
 
 
   steps:
-  
+
 #   - script:  |
 #       pwd
 #       dir
@@ -36,10 +36,7 @@ jobs:
 #     displayName: Where are we?
 
   - powershell: |
-      cd $(Agent.BuildDirectory)
-      mkdir wheel/oiio
-      cd wheel/oiio
-      echo $null >> __init__.py
+      cd $(Agent.BuildDirectory)/src/oiio
       cp $(Agent.BuildDirectory)/* .
       cd $(Agent.BuildDirectory)
       choco install -y tree
