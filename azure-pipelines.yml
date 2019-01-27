@@ -110,6 +110,18 @@ jobs:
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio
+  - powershell: |
+      choco install -y tree
+      cd C:\vcpkg\installed\x64-windows\bin
+      tree
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: oiio bin folder tree
+  - powershell: |
+      choco install -y tree
+      cd C:\vcpkg\installed\x64-windows\lib\python3.6\site-packages
+      tree
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: oiio site-packages folder tree
 
 #   # now we use the value, no matter where we got it
 #   - script: |
