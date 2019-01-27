@@ -63,10 +63,6 @@ jobs:
   # Make edits to vcpkg oiio portfile.cmake
   - powershell: |
       cat C:/vcpkg/ports/openimageio/portfile.cmake
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Show contents of oiio portfile.cmake
-  - powershell: |
-      choco install -y sed
       sed -i '/REF Release-/c\REF $(oiio.tag)' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/SHA512/c\SHA512 $(oiio.sha512)' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/HEAD_REF/c\HEAD_REF $(oiio.head_ref)' C:/vcpkg/ports/openimageio/portfile.cmake
@@ -75,12 +71,9 @@ jobs:
       sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i 's/LICENSE/LICENSE.md/g' C:/vcpkg/ports/openimageio/portfile.cmake
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Edit contents of oiio portfile.cmake
-  - powershell: |
       cat C:/vcpkg/ports/openimageio/portfile.cmake
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Show contents of oiio portfile.cmake
+    displayName: Modify oiio portfile.cmake
 
   # Install oiio via vcpkg
   - powershell: |
@@ -91,7 +84,7 @@ jobs:
       .\vcpkg install pybind11:x64-windows
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Install prerequisites
+    displayName: Install oiio prerequisites
   - powershell: |
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd C:/vcpkg
@@ -106,12 +99,12 @@ jobs:
       cd C:\vcpkg\installed\x64-windows\bin
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: oiio bin folder tree
+    displayName: Show contents of oiio bin folder tree
   - powershell: |
-      cd C:\vcpkg\installed\x64-windows\lib\python3.6\site-packages
+      cd C:\vcpkg\installed\x64-windows\lib\python$(python.version)\site-packages
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: oiio site-packages folder tree
+    displayName: Show contents of oiio site-packages folder tree
 
   # Copy files into Python package
   - powershell: |
