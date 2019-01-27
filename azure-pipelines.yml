@@ -35,7 +35,7 @@ jobs:
 #     condition: eq( variables['Agent.OS'], 'Windows_NT' )
 #     displayName: Where are we?
 
-  - bash: |
+  - powershell: |
       cd $(Agent.BuildDirectory)
       mkdir wheel/oiio
       cd wheel/oiio
