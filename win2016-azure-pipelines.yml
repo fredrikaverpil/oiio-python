@@ -22,8 +22,10 @@ jobs:
 
   variables:
     oiio.tag: 'Release-2.0.4'
+    oiio.head_ref: 'master'
     oiio.sha512: 'f6de620fba52e871f546e129c2d4b1792ff20504ab4219d8098be48cb552fd70a7064e8d487b9e1ad6473deda57f116e7f0185d7778ef3c5da7c077415288356'
-
+    pypackage.version: '0.1.dev0'
+    pypackage.os_name: 'Microsoft :: Windows'
 
   pool:
     vmImage: $(imageName)
@@ -40,9 +42,9 @@ jobs:
   # Make setup.py ready
   - powershell: |
       cd $(Agent.BuildDirectory)/s/src
-      sed -i 's/PACKAGE_VERSION/0.1.dev0/g' setup.py
+      sed -i 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
       sed -i 's/PYTHON_VERSION/$(python.version)/g' setup.py
-      sed -i 's/OS_NAME/Microsoft :: Windows/g' setup.py
+      sed -i 's/OS_NAME/$(pypackage.os_name)/g' setup.py
       cat setup.py
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Rename variables in setup.py
@@ -65,10 +67,10 @@ jobs:
     displayName: Show contents of oiio portfile.cmake
   - powershell: |
       choco install -y sed
-      sed -i '/REF Release-1.8.16/c\REF $(oiio.tag)' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/REF Release-/c\REF $(oiio.tag)' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/SHA512/c\SHA512 $(oiio.sha512)' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/HEAD_REF/c\HEAD_REF master' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/vcpkg_configure_cmake(/c\set(ENV{OIIO_PYTHON_VERSION} \"3.6\")\n\nvcpkg_configure_cmake(' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/HEAD_REF/c\HEAD_REF $(oiio.head_ref)' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/vcpkg_configure_cmake(/c\set(ENV{OIIO_PYTHON_VERSION} \"$(python.version)\")\n\nvcpkg_configure_cmake(' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' C:/vcpkg/ports/openimageio/portfile.cmake
@@ -113,7 +115,7 @@ jobs:
 
   # Copy files into Python package
   - powershell: |
-      cp -r C:\vcpkg\installed\x64-windows\lib\python3.6\site-packages\*.pyd $(Agent.BuildDirectory)/s/src/oiio
+      cp -r C:\vcpkg\installed\x64-windows\lib\python$(python.version)\site-packages\*.pyd $(Agent.BuildDirectory)/s/src/oiio
       cp -r C:\vcpkg\installed\x64-windows\bin\*.dll $(Agent.BuildDirectory)/s/src/oiio
       cd $(Agent.BuildDirectory)/s
       tree /F
