@@ -31,7 +31,7 @@ jobs:
   - powershell: |
       cd $(Agent.BuildDirectory)/s/src
       sed -i 's/VERSION/0.1.dev0/g' setup.py
-      sed -i 's/OS_VERSION/Microsoft :: Windows/g' setup.py
+      sed -i 's/OS_NAME/Microsoft :: Windows/g' setup.py
       cat setup.py
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Rename variables in setup.py
