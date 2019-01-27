@@ -47,7 +47,7 @@ jobs:
       cd s
       cd src
       cd oiio
-      cp -r $(Agent.BuildDirectory)/s/* .
+      cp -r $(Agent.BuildDirectory)/s/*.md .
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Make wheel
 
