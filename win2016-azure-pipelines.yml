@@ -64,7 +64,13 @@ jobs:
       sed -i '/SHA512/c\SHA512 $(oiio.sha512)' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/HEAD_REF/c\HEAD_REF $(oiio.head_ref)' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/vcpkg_configure_cmake(/c\set(ENV{OIIO_PYTHON_VERSION} \"$(python.version)\")\n\nvcpkg_configure_cmake(' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DUSE_FREETYPE/c\-DUSE_FREETYPE=ON' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DUSE_GIF/c\-DUSE_GIF=ON' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DUSE_LIBRAW/c\-DUSE_LIBRAW=ON' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DUSE_OPENJPEG/c\-DUSE_OPENJPEG=ON' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DUSE_PTEX/c\-DUSE_PTEX=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' C:/vcpkg/ports/openimageio/portfile.cmake
+      sed -i '/-DUSE_WEBP/c\-DUSE_WEBP=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' C:/vcpkg/ports/openimageio/portfile.cmake
       sed -i 's/LICENSE/LICENSE.md/g' C:/vcpkg/ports/openimageio/portfile.cmake
@@ -77,9 +83,17 @@ jobs:
   - powershell: |
       cd C:/vcpkg
       .\vcpkg list
-      .\vcpkg install openexr:x64-windows
-      .\vcpkg install tiff:x64-windows
       .\vcpkg install pybind11:x64-windows
+      .\vcpkg install zlib:x64-windows
+      .\vcpkg install tiff:x64-windows
+      .\vcpkg install libpng:x64-windows
+      .\vcpkg install openexr:x64-windows
+      .\vcpkg install freetype:x64-windows
+      .\vcpkg install giflib:x64-windows
+      .\vcpkg install libwebp:x64-windows
+      .\vcpkg install openjpeg:x64-windows
+      .\vcpkg install ptex:x64-windows
+      .\vcpkg install libraw:x64-windows
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio prerequisites
