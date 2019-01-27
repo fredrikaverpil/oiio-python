@@ -42,10 +42,10 @@ jobs:
       addToPath: true
 
   - powershell: |
-      cd C:/ 
-      git clone https://github.com/Microsoft/vcpkg.git 
-      cd vcpkg 
-      .\bootstrap-vcpkg.bat 
+      cd C:/
+      git clone https://github.com/Microsoft/vcpkg.git
+      cd vcpkg
+      .\bootstrap-vcpkg.bat
       .\vcpkg integrate install
       .\vcpkg update
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
