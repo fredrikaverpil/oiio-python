@@ -35,15 +35,15 @@ jobs:
       cd $(Agent.BuildDirectory)
       echo "in build folder: $(pwd)"
       pwd
-      tree
+      tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Where are we?
 
   - powershell: |
-      tree
+      tree /F
       cd $(Agent.BuildDirectory)
       dir
-      tree
+      tree /F
       cd src
       cd oiio
       cp $(Agent.BuildDirectory)/* .
