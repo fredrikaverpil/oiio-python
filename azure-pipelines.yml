@@ -137,6 +137,7 @@ jobs:
     displayName: Copy files into oiio Python package
   - powershell: |
       cd $(Agent.BuildDirectory)/s/src
+      sed /s/[VERSION]/0.1.dev0/g setup.py
       pip install -U setuptools wheel
       python setup.py bdist_wheel
       tree /F
