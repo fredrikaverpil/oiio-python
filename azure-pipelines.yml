@@ -44,6 +44,7 @@ jobs:
       cd $(Agent.BuildDirectory)
       dir
       tree /F
+      cd s
       cd src
       cd oiio
       cp $(Agent.BuildDirectory)/* .
