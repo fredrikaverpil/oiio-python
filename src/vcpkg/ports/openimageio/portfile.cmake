@@ -1,3 +1,5 @@
+// https://github.com/Microsoft/vcpkg/blob/9fe14bc18ec4b8f12238cd8790c44e42325f8e52/ports/openimageio/portfile.cmake
+
 include(vcpkg_common_functions)
 
 vcpkg_from_github(
