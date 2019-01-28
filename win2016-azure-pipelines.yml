@@ -81,6 +81,17 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio
 
+  # Debug logs
+  - powershell: |
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/config-x64-windows-err.log") { cat C:/vcpkg/buildtrees/openimageio/config-x64-windows-err.log }
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/config-x64-windows-out.log") { cat C:/vcpkg/buildtrees/openimageio/config-x64-windows-out.log }
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/install-x64-windows-dbg-err.log") { cat C:/vcpkg/buildtrees/openimageio/install-x64-windows-dbg-err.log }
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/install-x64-windows-dbg-out.log") { cat C:/vcpkg/buildtrees/openimageio/install-x64-windows-dbg-out.log }
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/install-x64-windows-rel-err.log") { cat C:/vcpkg/buildtrees/openimageio/install-x64-windows-rel-err.log }
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/install-x64-windows-rel-out.log") { cat C:/vcpkg/buildtrees/openimageio/install-x64-windows-rel-out.log }
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Build logs for oiio
+
   # View files from built and installed oiio
   - powershell: |
       cd C:\vcpkg\installed\x64-windows\bin
