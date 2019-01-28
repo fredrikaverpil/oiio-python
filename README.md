@@ -3,7 +3,7 @@
 OpenImageIO Python 3.x package.
 
 | Build pipeline | R&D Status | CI Status |
-| ------------- | ------------- |
+| ------------- | ------------- | ------------- |
 | win2016 | Wheels are building | [![Build Status](https://fredrikaverpil.visualstudio.com/oiio-python/_apis/build/status/oiio-python-win2016?branchName=master)](https://fredrikaverpil.visualstudio.com/oiio-python/_build/latest?definitionId=5?branchName=master) |
 | ubuntu 16.04 | Solving issues | [![Build Status](https://fredrikaverpil.visualstudio.com/oiio-python/_apis/build/status/oiio-python-ubuntu16.04?branchName=master)](https://fredrikaverpil.visualstudio.com/oiio-python/_build/latest?definitionId=6?branchName=master) |
 | macOS | Not started | |
