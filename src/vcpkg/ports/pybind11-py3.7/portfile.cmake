@@ -13,7 +13,7 @@ vcpkg_from_github(
 vcpkg_find_acquire_program(PYTHON3)
 
 get_filename_component(PYPATH ${PYTHON3} PATH)
-set(ENV{PATH} "$ENV{PATH};C:/Program Files (x86)/Microsoft Visual Studio/Shared/Python36_64/")
+set(ENV{PATH} "$ENV{PATH};C:/Program Files (x86)/Microsoft Visual Studio/Shared/Python37_64/")
 
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
