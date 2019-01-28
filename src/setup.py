@@ -16,7 +16,7 @@ setup(
 
     # https://pypi.org/classifiers/
     classifiers=[
-        "Programming Language :: Python :: PYTHON_VERSION",
+        "Programming Language :: Python :: PYTHON_VERSION :: Only",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS_NAME",
     ],
