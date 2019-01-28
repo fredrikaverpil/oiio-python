@@ -12,3 +12,4 @@
      <Link>
        <AdditionalDependencies>version.lib;shlwapi.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
 -- 
+
