@@ -8,10 +8,10 @@ jobs:
 
   strategy:
     matrix:
-      windows-py36:
-        python.version: '3.6'
-    #   windows-py37:
-    #     python.version: '3.7'
+#       windows-py36:
+#         python.version: '3.6'
+      windows-py37:
+        python.version: '3.7'
     # maxParallel: 3
 
   variables:
@@ -59,6 +59,7 @@ jobs:
   - powershell: |
       cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* C:/vcpkg/ports/python3
       cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* C:/vcpkg/ports/openimageio
+      cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* C:/vcpkg/ports/pybind11
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Override vcpkg port files
 
