@@ -60,21 +60,21 @@ jobs:
 
   # Make edits to vcpkg oiio portfile.cmake
   - powershell: |
-      sed -i '/REF Release-/c\REF $(oiio.ref)' $(src.vcpkg)/ports/openimageio-py$(python.version)/portfile.cmake
-      sed -i '/SHA512/c\SHA512 $(oiio.sha512)' $(src.vcpkg)/ports/openimageio-py$(python.version)/portfile.cmake
-      sed -i '/HEAD_REF/c\HEAD_REF $(oiio.head_ref)' $(src.vcpkg)/ports/openimageio-py$(python.version)/portfile.cmake
-      sed -i '/vcpkg_configure_cmake(/c\set(ENV{OIIO_PYTHON_VERSION} \"$(python.version)\")\n\nvcpkg_configure_cmake(' $(src.vcpkg)/ports/openimageio-py$(python.version)/portfile.cmake
-      sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' $(src.vcpkg)/ports/openimageio-py$(python.version)/portfile.cmake
-      sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' $(src.vcpkg)/ports/openimageio-py$(python.version)/portfile.cmake
-      sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' $(src.vcpkg)/ports/openimageio-py$(python.version)/portfile.cmake
-      sed -i 's/LICENSE/LICENSE.md/g' $(src.vcpkg)/ports/openimageio-py$(python.version)/portfile.cmake
-      cat $(src.vcpkg)/ports/openimageio-py$(python.version)/portfile.cmake
+      sed -i '/REF Release-/c\REF $(oiio.ref)' $(src.vcpkg)/ports/openimageio/portfile.cmake
+      sed -i '/SHA512/c\SHA512 $(oiio.sha512)' $(src.vcpkg)/ports/openimageio/portfile.cmake
+      sed -i '/HEAD_REF/c\HEAD_REF $(oiio.head_ref)' $(src.vcpkg)/ports/openimageio/portfile.cmake
+      sed -i '/vcpkg_configure_cmake(/c\set(ENV{OIIO_PYTHON_VERSION} \"$(python.version)\")\n\nvcpkg_configure_cmake(' $(src.vcpkg)/ports/openimageio/portfile.cmake
+      sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' $(src.vcpkg)/ports/openimageio/portfile.cmake
+      sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' $(src.vcpkg)/ports/openimageio/portfile.cmake
+      sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' $(src.vcpkg)/ports/openimageio/portfile.cmake
+      sed -i 's/LICENSE/LICENSE.md/g' $(src.vcpkg)/ports/openimageio/portfile.cmake
+      cat $(src.vcpkg)/ports/openimageio/portfile.cmake
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Modify oiio portfile.cmake
 
   # Copy customized port(s) into place
   - powershell: |
-      cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* C:/vcpkg/ports/openimageio
+      cp -r -v $(src.vcpkg)/ports/openimageio/* C:/vcpkg/ports/openimageio
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Override vcpkg port files
 
