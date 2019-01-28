@@ -57,6 +57,7 @@ jobs:
 
   # Copy customized port(s) into place
   - powershell: |
+      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* C:/vcpkg/ports/python3
       cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* C:/vcpkg/ports/openimageio
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Override vcpkg port files
