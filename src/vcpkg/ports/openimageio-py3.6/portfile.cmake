@@ -32,6 +32,8 @@ if("libraw" IN_LIST FEATURES)
     set(USE_LIBRAW ON)
 endif()
 
+set(ENV{OIIO_PYTHON_VERSION} "3.6")
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
@@ -51,13 +53,13 @@ vcpkg_configure_cmake(
         -DUSE_OPENJPEG=OFF
         -DUSE_OPENSSL=OFF
         -DUSE_PTEX=OFF
-        -DUSE_PYTHON=OFF
+            -DUSE_PYTHON=ON
         -DUSE_QT=OFF
         -DUSE_WEBP=OFF
         -DBUILDSTATIC=${BUILDSTATIC}
         -DLINKSTATIC=${LINKSTATIC}
-        -DBUILD_MISSING_PYBIND11=OFF
-        -DBUILD_MISSING_DEPS=OFF
+            -DBUILD_MISSING_PYBIND11=ON
+            -DBUILD_MISSING_DEPS=ON
         -DCMAKE_DISABLE_FIND_PACKAGE_Git=ON
         -DVERBOSE=ON
     OPTIONS_DEBUG
@@ -75,5 +77,5 @@ file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/include)
 file(REMOVE_RECURSE ${CURRENT_PACKAGES_DIR}/debug/share)
 
 # Handle copyright
-file(COPY ${SOURCE_PATH}/LICENSE DESTINATION ${CURRENT_PACKAGES_DIR}/share/openimageio)
-file(RENAME ${CURRENT_PACKAGES_DIR}/share/openimageio/LICENSE ${CURRENT_PACKAGES_DIR}/share/openimageio/copyright)
+file(COPY ${SOURCE_PATH}/LICENSE.md DESTINATION ${CURRENT_PACKAGES_DIR}/share/openimageio)
+file(RENAME ${CURRENT_PACKAGES_DIR}/share/openimageio/LICENSE.md ${CURRENT_PACKAGES_DIR}/share/openimageio/copyright)
