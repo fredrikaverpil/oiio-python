@@ -45,7 +45,7 @@ jobs:
       sed -i 's/OS_NAME/$(pypackage.os_name)/g' setup.py
       cat setup.py
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Rename variables in setup.py
+    displayName: Inject variable values into setup.py
 
   # Instal vcpkg
   - powershell: |
