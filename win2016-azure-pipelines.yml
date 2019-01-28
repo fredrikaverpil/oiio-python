@@ -46,7 +46,8 @@ jobs:
 
   # Check if python interpreter exists
   - powershell: |
-      if (Test-Path "C:/hostedtoolcache/windows/Python/3.7.0/x64/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
+      choco install python --version 3.7.0
+      if (Test-Path "C:/Python37/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Check Python Interpreter files
 
