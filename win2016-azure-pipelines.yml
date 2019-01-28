@@ -16,9 +16,8 @@ jobs:
 
   variables:
     azure.vm_image: 'vs2017-win2016'
-    oiio.ref: 'bb2c617e83b3b264c9f4b7503d3c01c16570fdb7'
-    oiio.head_ref: 'master'
-    oiio.sha512: '5c198bd53ebc84847df3f8c40c0eedcb16d9e45ad9627d2e69faa44ba0966f74cac29cb3e93af5df7162ef4af82101770118e10695e25b287d05d499932fab0f'
+    src.python: '$(Agent.BuildDirectory)/s/src/python'
+    src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
     pypackage.version: '2.0.4-$(Build.BuildNumber)'
     pypackage.os_name: 'Microsoft :: Windows'
 
@@ -37,13 +36,13 @@ jobs:
 
   # Make setup.py ready
   - powershell: |
-      cd $(Agent.BuildDirectory)/s/src
+      cd $(src.python)
       sed -i 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
       sed -i 's/PYTHON_VERSION/$(python.version)/g' setup.py
       sed -i 's/OS_NAME/$(pypackage.os_name)/g' setup.py
       cat setup.py
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Rename variables in setup.py
+    displayName: Inject variable values into setup.py
 
   # Instal vcpkg
   - powershell: |
@@ -56,22 +55,12 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install the Microsoft "vcpkg" manager
 
-  # Make edits to vcpkg oiio portfile.cmake
+  # Copy customized port(s) into place
   - powershell: |
-      echo "------------- BEFORE EDITS -------------"
-      cat C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/REF Release-/c\REF $(oiio.ref)' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/SHA512/c\SHA512 $(oiio.sha512)' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/HEAD_REF/c\HEAD_REF $(oiio.head_ref)' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/vcpkg_configure_cmake(/c\set(ENV{OIIO_PYTHON_VERSION} \"$(python.version)\")\n\nvcpkg_configure_cmake(' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/-DUSE_PYTHON/c\-DUSE_PYTHON=ON' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/-DBUILD_MISSING_PYBIND11/c\-DBUILD_MISSING_PYBIND11=ON' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i '/-DBUILD_MISSING_DEPS/c\-DBUILD_MISSING_DEPS=ON' C:/vcpkg/ports/openimageio/portfile.cmake
-      sed -i 's/LICENSE/LICENSE.md/g' C:/vcpkg/ports/openimageio/portfile.cmake
-      echo "------------- AFTER EDITS -------------"
-      cat C:/vcpkg/ports/openimageio/portfile.cmake
+      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* C:/vcpkg/ports/python3
+      cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* C:/vcpkg/ports/openimageio
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Modify oiio portfile.cmake
+    displayName: Override vcpkg port files
 
   # Install oiio via vcpkg
   - powershell: |
@@ -92,6 +81,17 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio
 
+  # Debug logs
+  - powershell: |
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/config-x64-windows-err.log") { cat C:/vcpkg/buildtrees/openimageio/config-x64-windows-err.log }
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/config-x64-windows-out.log") { cat C:/vcpkg/buildtrees/openimageio/config-x64-windows-out.log }
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/install-x64-windows-dbg-err.log") { cat C:/vcpkg/buildtrees/openimageio/install-x64-windows-dbg-err.log }
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/install-x64-windows-dbg-out.log") { cat C:/vcpkg/buildtrees/openimageio/install-x64-windows-dbg-out.log }
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/install-x64-windows-rel-err.log") { cat C:/vcpkg/buildtrees/openimageio/install-x64-windows-rel-err.log }
+      if (Test-Path "C:/vcpkg/buildtrees/openimageio/install-x64-windows-rel-out.log") { cat C:/vcpkg/buildtrees/openimageio/install-x64-windows-rel-out.log }
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Build logs for oiio
+
   # View files from built and installed oiio
   - powershell: |
       cd C:\vcpkg\installed\x64-windows\bin
@@ -106,14 +106,14 @@ jobs:
 
   # Copy files into Python package
   - powershell: |
-      cp -r -v C:\vcpkg\installed\x64-windows\lib\python$(python.version)\site-packages\*.pyd $(Agent.BuildDirectory)/s/src/oiio
-      cp -r -v C:\vcpkg\installed\x64-windows\bin\*.dll $(Agent.BuildDirectory)/s/src/oiio
-      cd $(Agent.BuildDirectory)/s
+      cp -r -v C:\vcpkg\installed\x64-windows\lib\python$(python.version)\site-packages\*.pyd $(src.python)/oiio
+      cp -r -v C:\vcpkg\installed\x64-windows\bin\*.dll $(src.python)/oiio
+      cd $(src.python)
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Copy files into oiio Python package
   - powershell: |
-      cd $(Agent.BuildDirectory)/s/src
+      cd $(src.python)
       pip install -U setuptools wheel
       python setup.py bdist_wheel --dist-dir="$(Build.ArtifactStagingDirectory)"
       cd $(Build.ArtifactStagingDirectory)
