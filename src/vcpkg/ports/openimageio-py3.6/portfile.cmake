@@ -1,5 +1,3 @@
-# https://github.com/Microsoft/vcpkg/blob/9fe14bc18ec4b8f12238cd8790c44e42325f8e52/ports/openimageio/portfile.cmake
-
 include(vcpkg_common_functions)
 
 vcpkg_from_github(
@@ -53,13 +51,13 @@ vcpkg_configure_cmake(
         -DUSE_OPENJPEG=OFF
         -DUSE_OPENSSL=OFF
         -DUSE_PTEX=OFF
-            -DUSE_PYTHON=ON
+        -DUSE_PYTHON=ON
         -DUSE_QT=OFF
         -DUSE_WEBP=OFF
         -DBUILDSTATIC=${BUILDSTATIC}
         -DLINKSTATIC=${LINKSTATIC}
-            -DBUILD_MISSING_PYBIND11=ON
-            -DBUILD_MISSING_DEPS=ON
+        -DBUILD_MISSING_PYBIND11=ON
+        -DBUILD_MISSING_DEPS=ON
         -DCMAKE_DISABLE_FIND_PACKAGE_Git=ON
         -DVERBOSE=ON
     OPTIONS_DEBUG
