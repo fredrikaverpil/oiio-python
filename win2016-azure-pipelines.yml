@@ -65,7 +65,7 @@ jobs:
   
   # Check if python interpreter exists
   - powershell: |
-      if (Test-Path "C:/Program Files (x86)/Microsoft Visual Studio/Shared/Python36_64/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
+      if (Test-Path "C:/Program Files (x86)/Microsoft Visual Studio/Shared/Python37_64/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Check Python Interpreter files
 
