@@ -62,6 +62,12 @@ jobs:
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* C:/vcpkg/ports/pybind11
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Override vcpkg port files
+  
+  # Check if python interpreter exists
+  - powershell: |
+      if (Test-Path "C:/Program Files (x86)/Microsoft Visual Studio/Shared/Python36_64/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Check Python Interpreter files
 
   # Install oiio via vcpkg
   - powershell: |
