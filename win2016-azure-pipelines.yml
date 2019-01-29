@@ -8,8 +8,8 @@ jobs:
 
   strategy:
     matrix:
-#       windows-py36:
-#         python.version: '3.6'
+      windows-py36:
+        python.version: '3.6'
       windows-py37:
         python.version: '3.7'
     # maxParallel: 3
@@ -27,6 +27,7 @@ jobs:
 
   steps:
 
+  # Select Python version to run on agent
   # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
   - task: UsePythonVersion@0
     inputs:
@@ -34,7 +35,7 @@ jobs:
       architecture: 'x64'
       addToPath: true
 
-  # Make setup.py ready
+  # Make setup.py ready by substituting placeholders
   - powershell: |
       cd $(src.python)
       sed -i 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
@@ -43,15 +44,6 @@ jobs:
       cat setup.py
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Inject variable values into setup.py
-
-  # Install Python Interpreter to default location
-  # We have to do this because pybind11 currently can't find the pre installed
-  # Python 3.7 Version from Azure Pipelines itself.
-  - powershell: |
-      choco install python --version 3.7.0
-      if (Test-Path "C:/Python37/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
-    condition: eq(variables['python.version'], '3.7')
-    displayName: Install Python Interpreter
 
   # Instal vcpkg
   - powershell: |
@@ -62,7 +54,7 @@ jobs:
       .\vcpkg integrate install
       .\vcpkg update
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Install the Microsoft "vcpkg" manager
+    displayName: Install vcpkg
 
   # Copy customized port(s) into place
   - powershell: |
@@ -72,19 +64,36 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Override vcpkg port files
 
-  # Copy customized triplet(s) into place 
+  # Install Python Interpreter to default location (workaround)
+  # We have to do this because pybind11 currently can't find the pre installed
+  # Python 3.7 Version from Azure Pipelines itself.
   - powershell: |
-      cp -r -v $(src.vcpkg)/triplets/* C:/vcpkg/triplets
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Override vcpkg triplet files
+      choco install python --version 3.7.0
+      if (Test-Path "C:/Python37/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
+    condition: eq(variables['python.version'], '3.7')
+    displayName: 'Workaround: Install Python Interpreter'
 
-  # Install oiio via vcpkg
+  # Install pybind11 via vcpkg
+  - powershell: |
+      cd C:/vcpkg
+      .\vcpkg list
+      .\vcpkg install pybind11:x64-windows
+      .\vcpkg list
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Install pybind11
+
+  # Uninstall Python Interpreter (workaround)
+  - powershell: |
+      if (Test-Path "C:/Python37/python.exe") { choco uninstall python -y --version 3.7.0 }
+    condition: eq(variables['python.version'], '3.7')
+    displayName: 'Workaround: Uninstall Python Interpreter'
+
+  # Install oiio prerequisites via vcpkg
   - powershell: |
       cd C:/vcpkg
       .\vcpkg list
       .\vcpkg install openexr:x64-windows
       .\vcpkg install tiff:x64-windows
-      .\vcpkg install pybind11:x64-windows
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio prerequisites
@@ -120,12 +129,6 @@ jobs:
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Show contents of oiio site-packages folder tree
-
-  # Uninstall Python Interpreter again
-  - powershell: |
-      if (Test-Path "C:/Python37/python.exe") { choco uninstall python -y --version 3.7.0 }
-    condition: eq(variables['python.version'], '3.7')
-    displayName: Uninstall Python Interpreter
 
   # Copy files into Python package
   - powershell: |
