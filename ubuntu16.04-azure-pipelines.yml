@@ -69,23 +69,23 @@ jobs:
     displayName: Install the Microsoft "vcpkg" manager
  
   # Copy customized port(s) into place
-  # - bash: |
-  #     cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* C:/vcpkg/ports/python3
-  #     cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* C:/vcpkg/ports/openimageio
-  #     cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* C:/vcpkg/ports/pybind11
-  #   condition: eq( variables['Agent.OS'], 'Linux' )
-  #   displayName: Override vcpkg port files
+  - bash: |
+      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* /home/vsts/work/1/s/vcpkg/ports/python3
+      cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* /home/vsts/work/1/s/vcpkg/ports/openimageio
+      cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* /home/vsts/work/1/s/vcpkg/ports/pybind11
+    condition: eq( variables['Agent.OS'], 'Linux' )
+    displayName: Override vcpkg port files
 
-  # Install oiio prerequisites via vcpkg
-  # - bash: |
-  #     cd C:/vcpkg
-  #     .\vcpkg list
-  #     .\vcpkg install openexr:x64-linux
-  #     .\vcpkg install tiff:x64-linux
-  #     .\vcpkg install pybind11:x64-linux
-  #     .\vcpkg list
-  #   condition: eq( variables['Agent.OS'], 'Linux' )
-  #   displayName: Install prerequisites
+  #Install oiio prerequisites via vcpkg
+  - bash: |
+      cd vcpkg
+      ./vcpkg list
+      ./vcpkg install openexr:x64-linux
+      ./vcpkg install tiff:x64-linux
+      ./vcpkg install pybind11:x64-linux
+      ./vcpkg list
+    condition: eq( variables['Agent.OS'], 'Linux' )
+    displayName: Install prerequisites
 
   # - bash: |
   #     $env:OIIO_PYTHON_VERSION = "$(python.version)"
