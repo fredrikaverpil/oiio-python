@@ -72,7 +72,7 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Override vcpkg port files
 
-  # Copy customized triplet(s) into place
+  # Copy customized triplet(s) into place 
   - powershell: |
       cp -r -v $(src.vcpkg)/triplets/* C:/vcpkg/triplets
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
