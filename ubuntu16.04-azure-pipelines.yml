@@ -49,6 +49,14 @@ jobs:
   #   condition: eq( variables['Agent.OS'], 'Windows_NT' )
   #   displayName: Inject variable values into setup.py
 
+  # Install vcpkg prerequisites
+  - bash: |
+      sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+      sudo apt-get update -y
+      sudo apt-get install g++-7 -y
+    condition: eq( variables['Agent.OS'], 'Linux' )
+    displayName: Install prerequisites for the Microsoft "vcpkg" manager
+
   # Install vcpkg
   - bash: |
       git clone https://github.com/Microsoft/vcpkg.git 
