@@ -75,7 +75,7 @@ jobs:
   # Fore more info, see issue #7:
   # https://github.com/fredrikaverpil/oiio-python/issues/7#issuecomment-458042455
   - powershell: |
-      choco install python --version 3.7.0
+      choco install python --version $(python.version).$(python.version_patch)
       if (Test-Path "C:/Python37/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
     condition: eq(variables['python.version'], '3.7')
     displayName: 'Workaround: Install Python 3.7 Interpreter'
@@ -91,7 +91,7 @@ jobs:
 
   # Uninstall Python Interpreter
   - powershell: |
-      if (Test-Path "C:/Python37/python.exe") { choco uninstall python -y --version 3.7.0 }
+      if (Test-Path "C:/Python37/python.exe") { choco uninstall python -y --version $(python.version).$(python.version_patch) }
     condition: eq(variables['python.version'], '3.7')
     displayName: 'Workaround: Uninstall Python 3.7 Interpreter'
 
