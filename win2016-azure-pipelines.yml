@@ -48,7 +48,7 @@ jobs:
   - powershell: |
       choco install python --version 3.7.0
       if (Test-Path "C:/Python37/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
-    condition: eq( $(python.version), '3.7' )
+    condition: eq( '$(python.version)', '3.7' )
     displayName: Install Python Interpreter
 
   # Instal vcpkg
