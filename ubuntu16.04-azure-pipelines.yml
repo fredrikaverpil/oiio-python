@@ -76,7 +76,7 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Linux' )
     displayName: Override vcpkg port files
 
-  #Install oiio prerequisites via vcpkg
+  # Install oiio prerequisites via vcpkg
   - bash: |
       cd vcpkg
       ./vcpkg list
@@ -87,14 +87,15 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Linux' )
     displayName: Install prerequisites
 
-  # - bash: |
-  #     $env:OIIO_PYTHON_VERSION = "$(python.version)"
-  #     cd C:/vcpkg
-  #     .\vcpkg list
-  #     .\vcpkg install openimageio:x64-linux
-  #     .\vcpkg list
-  #   condition: eq( variables['Agent.OS'], 'Linux' )
-  #   displayName: Install oiio
+  # Install oiio
+  - bash: |
+      $env:OIIO_PYTHON_VERSION = "$(python.version)"
+      cd vcpkg
+      ./vcpkg list
+      ./vcpkg install openimageio:x64-linux
+      ./vcpkg list
+    condition: eq( variables['Agent.OS'], 'Linux' )
+    displayName: Install oiio
 
   # Debug Logs
   # - bash: |
