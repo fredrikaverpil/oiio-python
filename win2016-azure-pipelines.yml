@@ -44,12 +44,12 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Inject variable values into setup.py
 
-  # Check if python interpreter exists
+  # Install Python Interpreter to default location
   - powershell: |
       choco install python --version 3.7.0
       if (Test-Path "C:/Python37/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Check Python Interpreter files
+    condition: eq( $(python.version), '3.7' )
+    displayName: Install Python Interpreter
 
   # Instal vcpkg
   - powershell: |
