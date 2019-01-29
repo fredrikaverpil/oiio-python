@@ -78,16 +78,6 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Override vcpkg triplet files
 
-  # Enable "Release Only" option inside custom triplet file AFTER Ilmbase was installed
-  # This workaround is necessary because their isn issue with the vcpkg Ilmbase package
-  - powershell: |
-      cd C:/vcpkg
-      .\vcpkg install ilmbase:x64-windows
-      .\vcpkg list
-      sed -i 's/# set(VCPKG_BUILD_TYPE release)/set(VCPKG_BUILD_TYPE release)/g' C:/vcpkg/triplets/x64-windows.cmake
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Install Ilmbase and enable vcpkg release only option
-
   # Install oiio via vcpkg
   - powershell: |
       cd C:/vcpkg
