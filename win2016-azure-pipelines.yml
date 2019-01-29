@@ -45,6 +45,8 @@ jobs:
     displayName: Inject variable values into setup.py
 
   # Install Python Interpreter to default location
+  # We have to do this because pybind11 currently can't find the pre installed
+  # Python 3.7 Version from Azure Pipelines itself.
   - powershell: |
       choco install python --version 3.7.0
       if (Test-Path "C:/Python37/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
@@ -69,6 +71,12 @@ jobs:
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* C:/vcpkg/ports/pybind11
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Override vcpkg port files
+
+  # Copy customized triplet(s) into place
+  - powershell: |
+      cp -r -v $(src.vcpkg)/triplets/* C:/vcpkg/triplets
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Override vcpkg triplet files
 
   # Install oiio via vcpkg
   - powershell: |
