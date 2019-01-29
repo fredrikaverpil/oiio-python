@@ -9,12 +9,16 @@ jobs:
   strategy:
     matrix:
       windows-py36:
-        python.version: '3.6'
-    #   windows-py37:
-    #     python.version: '3.7'
-    # maxParallel: 3
+        python.version_major: '3'
+        python.version_minor: '6'
+        python.version_patch: '4'
+      windows-py37:
+        python.version_major: '3'
+        python.version_minor: '7'
+        python.version_patch: '0'
 
   variables:
+    python.version: '$(python.version_major).$(python.version_minor)'
     azure.vm_image: 'vs2017-win2016'
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
@@ -27,6 +31,7 @@ jobs:
 
   steps:
 
+  # Select Python version to run on agent
   # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
   - task: UsePythonVersion@0
     inputs:
@@ -34,7 +39,7 @@ jobs:
       architecture: 'x64'
       addToPath: true
 
-  # Make setup.py ready
+  # Make setup.py ready by substituting placeholders
   - powershell: |
       cd $(src.python)
       sed -i 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
@@ -53,25 +58,53 @@ jobs:
       .\vcpkg integrate install
       .\vcpkg update
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Install the Microsoft "vcpkg" manager
+    displayName: Install vcpkg
 
   # Copy customized port(s) into place
   - powershell: |
       cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* C:/vcpkg/ports/python3
       cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* C:/vcpkg/ports/openimageio
+      cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* C:/vcpkg/ports/pybind11
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Override vcpkg port files
 
-  # Install oiio via vcpkg
+  # Install Python Interpreter to default location
+  # We have to do this because pybind11 currently can't find the
+  # Azure-provided Python:
+  # Could NOT find PythonInterp (missing: PYTHON_EXECUTABLE) (Required is at least version "3.7")
+  # Fore more info, see issue #7:
+  # https://github.com/fredrikaverpil/oiio-python/issues/7#issuecomment-458042455
+  - powershell: |
+      choco install python --version $(python.version).$(python.version_patch)
+      if (Test-Path "C:/Python37/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
+    condition: eq(variables['python.version'], '3.7')
+    displayName: 'Workaround: Install Python 3.7 Interpreter'
+
+  # Install pybind11 via vcpkg
+  - powershell: |
+      cd C:/vcpkg
+      .\vcpkg list
+      .\vcpkg install pybind11:x64-windows
+      .\vcpkg list
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Install pybind11
+
+  # Uninstall Python Interpreter
+  - powershell: |
+      if (Test-Path "C:/Python37/python.exe") { choco uninstall python -y --version $(python.version).$(python.version_patch) }
+    condition: eq(variables['python.version'], '3.7')
+    displayName: 'Workaround: Uninstall Python 3.7 Interpreter'
+
+  # Install oiio prerequisites via vcpkg
   - powershell: |
       cd C:/vcpkg
       .\vcpkg list
       .\vcpkg install openexr:x64-windows
       .\vcpkg install tiff:x64-windows
-      .\vcpkg install pybind11:x64-windows
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio prerequisites
+
   - powershell: |
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd C:/vcpkg
