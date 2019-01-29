@@ -73,10 +73,20 @@ jobs:
     displayName: Override vcpkg port files
 
   # Copy customized triplet(s) into place 
-#   - powershell: |
-#       cp -r -v $(src.vcpkg)/triplets/* C:/vcpkg/triplets
-#     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-#     displayName: Override vcpkg triplet files
+  - powershell: |
+      cp -r -v $(src.vcpkg)/triplets/* C:/vcpkg/triplets
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Override vcpkg triplet files
+
+  # Enable "Release Only" option inside custom triplet file AFTER Ilmbase was installed
+  # This workaround is necessary because their isn issue with the vcpkg Ilmbase package
+  - powershell: |
+      cd C:/vcpkg
+      .\vcpkg install ilmbase:x64-windows
+      .\vcpkg list
+      sed -i 's/# set(VCPKG_BUILD_TYPE release)/set(VCPKG_BUILD_TYPE release)/g' C:/vcpkg/triplets/x64-windows.cmake
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Install Ilmbase and enable vcpkg release only option
 
   # Install oiio via vcpkg
   - powershell: |
@@ -88,6 +98,7 @@ jobs:
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio prerequisites
+
   - powershell: |
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd C:/vcpkg
@@ -119,6 +130,12 @@ jobs:
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Show contents of oiio site-packages folder tree
+
+  # Uninstall Python Interpreter again
+  - powershell: |
+      if (Test-Path "C:/Python37/python.exe") { choco uninstall python -y --version 3.7.0 }
+    condition: eq(variables['python.version'], '3.7')
+    displayName: Uninstall Python Interpreter
 
   # Copy files into Python package
   - powershell: |
