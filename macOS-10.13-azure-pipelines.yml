@@ -101,7 +101,9 @@ jobs:
 
   # View files from built and installed oiio
   - bash: |
-      cd $(install.vcpkg)/installed/x64-osx/bin
+      ls $(install.vcpkg)
+      ls $(install.vcpkg)/installed
+      cd $(install.vcpkg)/installed
       tree
     displayName: Show contents of oiio bin folder tree
   - bash: |
