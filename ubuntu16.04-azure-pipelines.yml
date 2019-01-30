@@ -98,10 +98,17 @@ jobs:
     displayName: Install oiio
 
   # Debug Logs
-  # - bash: |
-  #     [ -f /home/sidney/Desktop/oiio/__init__.py ] && echo "Found" || echo "Not found"
-  #   condition: eq( variables['Agent.OS'], 'Linux' )
-  #   displayName: Build logs for oiio
+  - bash: |
+      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-dbg-err.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-dbg-err.log || echo "Not found"
+      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-dbg-out.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-dbg-out.log || echo "Not found"
+      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-rel-err.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-rel-err.log || echo "Not found"
+      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-rel-out.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-rel-out.log || echo "Not found"
+      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-dbg-err.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-dbg-err.log || echo "Not found"
+      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-dbg-out.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-dbg-out.log || echo "Not found"
+      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-rel-err.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-rel-err.log || echo "Not found"
+      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-rel-out.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-rel-out.log || echo "Not found"
+    condition: eq( variables['Agent.OS'], 'Linux' )
+    displayName: Build logs for oiio
 
   # Publish wheel as build artifact (see "Summary" in Azure Pipelines build)
   # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/publish-build-artifacts?view=azdevops
