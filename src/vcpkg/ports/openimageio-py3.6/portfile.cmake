@@ -32,6 +32,10 @@ endif()
 
 set(ENV{OIIO_PYTHON_VERSION} "3.6")
 
+message("DEBUG - CURRENT DIRECTORY ${CMAKE_CURRENT_LIST_DIR}")
+file(COPY ${CMAKE_CURRENT_LIST_DIR}/FindOpenEXR.cmake DESTINATION ${SOURCE_PATH}/src/cmake/modules)
+message("DEBUG - COPIED FIND_OPEN_EXR FILE!")
+
 if(WIN32)
     set(HIDE_SYMBOLS ON)
 else()
@@ -66,7 +70,6 @@ vcpkg_configure_cmake(
         -DBUILD_MISSING_DEPS=ON
         -DCMAKE_DISABLE_FIND_PACKAGE_Git=ON
         -DVERBOSE=ON
-        -DOPENEXR_LIBRARIES = "/home/vsts/work/1/s/vcpkg/installed/x64-linux/lib/libIlmImf-2_2.a;/home/vsts/work/1/s/vcpkg/installed/x64-linux/lib/libImath-2_2.a;/home/vsts/work/1/s/vcpkg/installed/x64-linux/lib/libIex-2_2;/home/vsts/work/1/s/vcpkg/installed/x64-linux/debug/lib/libHalf.a;/home/vsts/work/1/s/vcpkg/installed/x64-linux/debug/lib/libIlmThread-2_2.a;-lpthread;/home/vsts/work/1/s/vcpkg/installed/x64-linux/debug/lib/libz.a"
     OPTIONS_DEBUG
         -DOPENEXR_CUSTOM_LIB_DIR=${CURRENT_INSTALLED_DIR}/debug/lib
 )
