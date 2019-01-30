@@ -75,7 +75,7 @@ jobs:
     displayName: Override pybind11 vcpkg port files
 
   # Install pybind11 via vcpkg
-  - powershell: |
+  - bash: |
       cd $(install.vcpkg)
       ./vcpkg list
       ./vcpkg install pybind11:x64-macos
