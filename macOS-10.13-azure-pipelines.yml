@@ -91,6 +91,7 @@ jobs:
       ./vcpkg list
     displayName: Install oiio prerequisites
 
+  # Install oiio
   - bash: |
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd $(install.vcpkg)
@@ -99,9 +100,10 @@ jobs:
       ./vcpkg list
     displayName: Install oiio
 
-
   # View files from built and installed oiio
   - bash: |
+      cd $(install.vcpkg)
+      tree
       cd $(install.vcpkg)/installed
       tree
       cd $(install.vcpkg)/installed/x64-osx/lib/python$(python.version)/site-packages
@@ -115,11 +117,12 @@ jobs:
       tree
     displayName: Copy files into oiio Python package
 
+  # Build wheel
   - bash: |
       cd $(src.python)
       python -m pip install -U pip
       pip install -U setuptools wheel
-      python setup.py bdist_wheel --python-tag=py$(python.version_major)$(python.version_minor) --plat-name=macosx_10_13_intel --dist-dir="$(Build.ArtifactStagingDirectory)"
+      python setup.py bdist_wheel --python-tag=cp$(python.version_major)$(python.version_minor) --plat-name=macosx_10_13_intel --dist-dir="$(Build.ArtifactStagingDirectory)"
       cd $(Build.ArtifactStagingDirectory)
       tree
     displayName: Build wheel
