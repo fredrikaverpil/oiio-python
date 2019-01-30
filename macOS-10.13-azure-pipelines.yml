@@ -118,7 +118,7 @@ jobs:
       cd $(src.python)
       python -m pip install -U pip
       pip install -U setuptools wheel
-      python setup.py bdist_wheel --python-tag=cp$(python.version_major)$(python.version_minor) --plat-name=macosx_10_13_intel --dist-dir="$(Build.ArtifactStagingDirectory)"
+      python setup.py bdist_wheel --python-tag=cp$(python.version_major)$(python.version_minor) --plat-name=macosx-10.13-x86_64 --dist-dir="$(Build.ArtifactStagingDirectory)"
       cd $(Build.ArtifactStagingDirectory)
       tree
     displayName: Build wheel
