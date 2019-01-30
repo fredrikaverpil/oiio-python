@@ -50,6 +50,7 @@ jobs:
 
   # Install vcpkg
   - bash: |
+      brew install gcc6
       git clone https://github.com/Microsoft/vcpkg.git
       cd vcpkg
       ./bootstrap-vcpkg.sh
