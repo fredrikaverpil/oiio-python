@@ -77,22 +77,24 @@ jobs:
     displayName: Override vcpkg port files
 
   # Install oiio prerequisites via vcpkg
-  - bash: |
-      cd vcpkg
-      ./vcpkg list
-      ./vcpkg install openexr:x64-linux
-      ./vcpkg install tiff:x64-linux
-      ./vcpkg install python3:x64-linux
-      ./vcpkg install pybind11:x64-linux
-      ./vcpkg list
-    condition: eq( variables['Agent.OS'], 'Linux' )
-    displayName: Install prerequisites
+  # - bash: |
+  #     cd vcpkg
+  #     ./vcpkg list
+  #     ./vcpkg install openexr:x64-linux
+  #     ./vcpkg install tiff:x64-linux
+  #     ./vcpkg install python3:x64-linux
+  #     ./vcpkg install pybind11:x64-linux
+  #     ./vcpkg list
+  #   condition: eq( variables['Agent.OS'], 'Linux' )
+  #   displayName: Install prerequisites
 
   # Install oiio
   - bash: |
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd vcpkg
       ./vcpkg list
+      ./vcpkg install python3:x64-linux
+      ./vcpkg install pybind11:x64-linux
       ./vcpkg install openimageio:x64-linux
       ./vcpkg list
     condition: eq( variables['Agent.OS'], 'Linux' )
