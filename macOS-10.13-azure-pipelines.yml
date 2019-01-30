@@ -42,9 +42,9 @@ jobs:
   # Make setup.py ready by substituting placeholders
   - bash: |
       cd $(src.python)
-      sed -i "s/PACKAGE_VERSION/$(pypackage.version)/g" setup.py
-      sed -i "s/PYTHON_VERSION/$(python.version)/g" setup.py
-      sed -i "s/OS_NAME/$(pypackage.os_name)/g" setup.py
+      sed -i'' -e 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
+      sed -i'' -e 's/PYTHON_VERSION/$(python.version)/g' setup.py
+      sed -i'' -e 's/OS_NAME/$(pypackage.os_name)/g' setup.py
       cat setup.py
     displayName: Inject variable values into setup.py
 
