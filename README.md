@@ -4,19 +4,19 @@ OpenImageIO Python 3.x package.
 
 | Build pipeline | R&D Status | CI Status |
 | ------------- | ------------- | ------------- |
-| win2016 | Wheels are building | [![Build Status](https://fredrikaverpil.visualstudio.com/oiio-python/_apis/build/status/oiio-python-win2016?branchName=master)](https://fredrikaverpil.visualstudio.com/oiio-python/_build/latest?definitionId=5?branchName=master) |
-| ubuntu 16.04 | Solving issues | [![Build Status](https://fredrikaverpil.visualstudio.com/oiio-python/_apis/build/status/oiio-python-ubuntu16.04?branchName=master)](https://fredrikaverpil.visualstudio.com/oiio-python/_build/latest?definitionId=6?branchName=master) |
-| macOS | Not started | |
+| Windows Server 2016 | Wheels are building | [![Build Status](https://fredrikaverpil.visualstudio.com/oiio-python/_apis/build/status/oiio-python-win2016?branchName=master)](https://fredrikaverpil.visualstudio.com/oiio-python/_build/latest?definitionId=5?branchName=master) |
+| Ubuntu 16.04 | In development | [![Build Status](https://fredrikaverpil.visualstudio.com/oiio-python/_apis/build/status/oiio-python-ubuntu16.04?branchName=master)](https://fredrikaverpil.visualstudio.com/oiio-python/_build/latest?definitionId=6?branchName=master) |
+| macOS 10.13 | Wheels are building | [![Build Status](https://fredrikaverpil.visualstudio.com/oiio-python/_apis/build/status/oiio-python-macOS-10.13?branchName=master)](https://fredrikaverpil.visualstudio.com/oiio-python/_build/latest?definitionId=7&branchName=master) |
 
 ## About the project
 
-We are attempting to build oiio for Python 3.x (wheels) using [vcpkg]() on Windows, Linux and macOS.
+We are attempting to build oiio for Python 3.x (wheels) using [vcpkg](https://github.com/Microsoft/vcpkg) on Windows, Linux and macOS.
 
 ## Download wheels
 
-Since the project is still in a r&d phase, no releases have been made just yet. Instead, look at the CI builds where wheels are stored as build artifacts after successful builds.
+Since the project is still in a research phase, no releases have been made just yet. Instead, look at the Azure Pipeline CI builds where wheels are stored as build artifacts.
 
-For each Azure Pipelines build, click the "Summary" link, and you will see the build artifacts (Python wheels).
+For each Azure Pipelines build, click the "Summary" link, and you will see the build artifacts (zipped Python wheels).
 
 ## Notes
 
