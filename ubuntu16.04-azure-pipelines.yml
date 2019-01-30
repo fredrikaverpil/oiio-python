@@ -82,6 +82,7 @@ jobs:
       ./vcpkg list
       ./vcpkg install openexr:x64-linux
       ./vcpkg install tiff:x64-linux
+      ./vcpkg install python3:x64-linux
       ./vcpkg install pybind11:x64-linux
       ./vcpkg list
     condition: eq( variables['Agent.OS'], 'Linux' )
