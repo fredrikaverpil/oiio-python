@@ -8,11 +8,11 @@ jobs:
 
   strategy:
     matrix:
-      windows-py36:
+      macos-py36:
         python.version_major: '3'
         python.version_minor: '6'
         python.version_patch: '4'
-      windows-py37:
+      macos-py37:
         python.version_major: '3'
         python.version_minor: '7'
         python.version_patch: '0'
@@ -57,6 +57,11 @@ jobs:
       ./bootstrap-vcpkg.sh
       ./vcpkg integrate install
     displayName: Install vcpkg
+
+  - bash: |
+      echo "$(python.version)"
+      echo "$(install.vcpkg)"
+    displayName: Test echo commands of variables
 
   # Copy customized port(s) into place
   - bash: |
