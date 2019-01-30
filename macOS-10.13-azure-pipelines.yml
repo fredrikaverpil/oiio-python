@@ -68,3 +68,11 @@ jobs:
       cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
     displayName: Override vcpkg port files
+
+  # Install pybind11 via vcpkg
+  - powershell: |
+      cd $(install.vcpkg)
+      ./vcpkg list
+      ./vcpkg install pybind11:x64-macos
+      ./vcpkg list
+    displayName: Install pybind11
