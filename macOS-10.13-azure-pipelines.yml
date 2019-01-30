@@ -95,7 +95,7 @@ jobs:
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd $(install.vcpkg)
       ./vcpkg list
-      ./vcpkg install openimageio:x64-windows
+      ./vcpkg install openimageio:x64-macos
       ./vcpkg list
     displayName: Install oiio
 
