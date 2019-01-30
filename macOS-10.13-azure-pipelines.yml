@@ -40,13 +40,12 @@ jobs:
       addToPath: true
 
   # Make setup.py ready by substituting placeholders
-  - powershell: |
+  - bash: |
       cd $(src.python)
       sed -i 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
       sed -i 's/PYTHON_VERSION/$(python.version)/g' setup.py
       sed -i 's/OS_NAME/$(pypackage.os_name)/g' setup.py
       cat setup.py
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Inject variable values into setup.py
 
   # Install vcpkg
