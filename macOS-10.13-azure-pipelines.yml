@@ -103,11 +103,11 @@ jobs:
   # View files from built and installed oiio
   - bash: |
       cd $(install.vcpkg)
-      tree
+      ls -alh
       cd $(install.vcpkg)/installed
-      tree
+      ls -alh
       cd $(install.vcpkg)/installed/x64-osx/lib/python$(python.version)/site-packages
-      tree
+      ls -alh
     displayName: Show contents of oiio site-packages folder tree
 
   # Copy files into Python package
