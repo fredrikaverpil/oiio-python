@@ -78,7 +78,7 @@ jobs:
   - bash: |
       cd $(install.vcpkg)
       ./vcpkg list
-      ./vcpkg install pybind11:x64-macos
+      ./vcpkg install pybind11:x64-osx
       ./vcpkg list
     displayName: Install pybind11
 
@@ -86,8 +86,8 @@ jobs:
   - bash: |
       cd $(install.vcpkg)
       ./vcpkg list
-      ./vcpkg install openexr:x64-macos
-      ./vcpkg install tiff:x64-macos
+      ./vcpkg install openexr:x64-osx
+      ./vcpkg install tiff:x64-osx
       ./vcpkg list
     displayName: Install oiio prerequisites
 
@@ -95,16 +95,16 @@ jobs:
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd $(install.vcpkg)
       ./vcpkg list
-      ./vcpkg install openimageio:x64-macos
+      ./vcpkg install openimageio:x64-osx
       ./vcpkg list
     displayName: Install oiio
 
   # View files from built and installed oiio
   - bash: |
-      cd $(install.vcpkg)/installed/x64-macos/bin
+      cd $(install.vcpkg)/installed/x64-osx/bin
       tree
     displayName: Show contents of oiio bin folder tree
   - bash: |
-      cd $(install.vcpkg)/installed/x64-macos/lib/python$(python.version)/site-packages
+      cd $(install.vcpkg)/installed/x64-osx/lib/python$(python.version)/site-packages
       tree
     displayName: Show contents of oiio site-packages folder tree
