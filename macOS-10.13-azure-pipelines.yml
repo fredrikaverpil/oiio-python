@@ -36,7 +36,7 @@ jobs:
   # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
   - task: UsePythonVersion@0
     inputs:
-      versionSpec: '$(python.version)'
+      versionSpec: '$(python.version).$(python.version_patch)'
       architecture: 'x64'
       addToPath: true
 
