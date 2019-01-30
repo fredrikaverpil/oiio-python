@@ -58,10 +58,6 @@ jobs:
       ./vcpkg integrate install
     displayName: Install vcpkg
 
-  - bash: |
-      which vcpkg
-    displayName: test vcpkg installation
-
   # Copy customized port(s) into place
   - bash: |
       cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* $(install.vcpkg)/ports/python3
