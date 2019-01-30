@@ -99,8 +99,11 @@ jobs:
       ./vcpkg list
     displayName: Install oiio
 
+
   # View files from built and installed oiio
   - bash: |
+      cd $(install.vcpkg)/installed
+      tree
       cd $(install.vcpkg)/installed/x64-osx/lib/python$(python.version)/site-packages
       tree
     displayName: Show contents of oiio site-packages folder tree
