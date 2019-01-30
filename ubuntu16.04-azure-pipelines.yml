@@ -111,6 +111,19 @@ jobs:
     condition: eq( variables['Agent.OS'], 'Linux' )
     displayName: Build logs for oiio
 
+  # View files from built and installed oiio
+  - bash: |
+      cd /home/vsts/work/1/s/vcpkg/installed/x64-linux/lib/python$(python.version)/site-packages
+      ls
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Show contents of oiio site-packages folder tree
+
+  # Copy files to Staging Directory
+  - bash: |
+      cp -r -v /home/vsts/work/1/s/vcpkg/installed/x64-linux/lib/python$(python.version)/site-packages/*.so $(Build.ArtifactStagingDirectory)
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Copy files into oiio Python package
+
   # Publish wheel as build artifact (see "Summary" in Azure Pipelines build)
   # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/publish-build-artifacts?view=azdevops
   - task: PublishBuildArtifacts@1

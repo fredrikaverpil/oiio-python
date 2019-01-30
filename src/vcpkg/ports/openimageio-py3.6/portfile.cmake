@@ -32,13 +32,19 @@ endif()
 
 set(ENV{OIIO_PYTHON_VERSION} "3.6")
 
+if(WIN32)
+    set(HIDE_SYMBOLS ON)
+else()
+    set(HIDE_SYMBOLS OFF)
+endif()
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
     OPTIONS
         -DOIIO_BUILD_TOOLS=OFF
         -DOIIO_BUILD_TESTS=OFF
-        -DHIDE_SYMBOLS=ON
+        -DHIDE_SYMBOLS=${HIDE_SYMBOLS}
         -DUSE_DICOM=OFF
         -DUSE_FFMPEG=OFF
         -DUSE_FIELD3D=OFF
