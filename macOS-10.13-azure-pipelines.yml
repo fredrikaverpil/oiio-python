@@ -49,6 +49,11 @@ jobs:
       cat setup.py
     displayName: Inject variable values into setup.py
 
+  # Install tree
+  - bash: |
+      brew install tree
+    displayName: Install tree
+
   # Install vcpkg
   - bash: |
       brew install gcc6
@@ -102,10 +107,6 @@ jobs:
 
   # View files from built and installed oiio
   - bash: |
-      cd $(install.vcpkg)
-      ls -alh
-      cd $(install.vcpkg)/installed
-      ls -alh
       cd $(install.vcpkg)/installed/x64-osx/lib/python$(python.version)/site-packages
       ls -alh
     displayName: Show contents of oiio site-packages folder tree
