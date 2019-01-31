@@ -85,14 +85,14 @@ jobs:
   # Install oiio extras
   - bash: |
       cd $(install.vcpkg)
-      .\vcpkg list
-      .\vcpkg install zlib:x64-osx
-      .\vcpkg install freetype:x64-osx
-      .\vcpkg install giflib:x64-osx
-      .\vcpkg install libwebp:x64-osx
-      .\vcpkg install openjpeg:x64-osx
-      .\vcpkg install ptex:x64-osx
-      .\vcpkg list
+      ./vcpkg list
+      ./vcpkg install zlib:x64-osx
+      ./vcpkg install freetype:x64-osx
+      ./vcpkg install giflib:x64-osx
+      ./vcpkg install libwebp:x64-osx
+      ./vcpkg install openjpeg:x64-osx
+      ./vcpkg install ptex:x64-osx
+      ./vcpkg list
     displayName: Install oiio extras
 
   # Install oiio prerequisites via vcpkg
