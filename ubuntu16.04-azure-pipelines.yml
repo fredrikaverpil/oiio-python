@@ -111,7 +111,7 @@ jobs:
   # View files from built and installed oiio
   - bash: |
       cd $(install.vcpkg)/installed/x64-linux/lib/python$(python.version)/site-packages
-      ls
+      tree
     displayName: Show contents of oiio site-packages folder tree
 
   # # Copy files into Python package
