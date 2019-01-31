@@ -8,10 +8,10 @@ jobs:
 
   strategy:
     matrix:
-      macos-py36:
-        python.version_major: '3'
-        python.version_minor: '6'
-        python.version_patch: '4'
+      # macos-py36:
+      #   python.version_major: '3'
+      #   python.version_minor: '6'
+      #   python.version_patch: '4'
       macos-py37:
         python.version_major: '3'
         python.version_minor: '7'
@@ -22,7 +22,6 @@ jobs:
     azure.vm_image: 'macOS-10.13'
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
-    src.brew: '$(Agent.BuildDirectory)/s/src/homebrew'
     tests: '$(Agent.BuildDirectory)/s/tests'
     install.vcpkg: $(Agent.BuildDirectory)/s/vcpkg
     pypackage.version: '2.0.4+$(Build.BuildNumber)'
@@ -42,14 +41,6 @@ jobs:
       architecture: 'x64'
       addToPath: true
     condition: ne(variables['python.version'], '3.6')
-
-  # Install Python 3.6.4 because Azure does not provide this exact version
-  - bash: |
-      curl -O https://www.python.org/ftp/python/3.6.4/python-3.6.4-macosx10.6.pkg
-      mkdir $(Agent.BuildDirectory)/s/python3
-      installer -pkg python-3.6.4-macosx10.6.pkg -target $(Agent.BuildDirectory)/s/python3
-    displayName: Install Python via homebrew
-    condition: eq(variables['python.version'], '3.6')
 
   # Make setup.py ready by substituting placeholders
   - bash: |
