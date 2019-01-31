@@ -7,10 +7,9 @@ class Python < Formula
     head "https://github.com/python/cpython.git"
   
     bottle do
-      rebuild 1
-      sha256 "37792966041dbb689e8901817105136c782d5def46288684fd28998731ed6f25" => :high_sierra
-      sha256 "ba0739dea99c119d439a905a035fa9fa7837427c9ea73d8832a75b3eff30f7e5" => :sierra
-      sha256 "a037e0adfc60991c5417e2c1aef86aade1b96eecff28441a57d2b987b78f248b" => :el_capitan
+      sha256 "638bc10452b2eba31092fba018bdc2584361cbf553693506301964ffa8ea4425" => :high_sierra
+      sha256 "99d76fdd41540744923f0b99411af6a9a4002e304c345e16773c6ee03fb8f665" => :sierra
+      sha256 "f1c93aca100003bb9b7f23096c80c8ac9068559d26aeb291e9e415b3f243a32a" => :el_capitan
     end
   
     devel do
@@ -39,8 +38,8 @@ class Python < Formula
     end
   
     resource "pip" do
-      url "https://files.pythonhosted.org/packages/c4/44/e6b8056b6c8f2bfd1445cc9990f478930d8e3459e9dbf5b8e2d2922d64d3/pip-9.0.3.tar.gz"
-      sha256 "7bf48f9a693be1d58f49f7af7e0ae9fe29fd671cde8a55e6edca3581c4ef5796"
+      url "https://files.pythonhosted.org/packages/11/b6/abcb525026a4be042b486df43905d6893fb04f05aac21c32c638e939e447/pip-9.0.1.tar.gz"
+      sha256 "09f243e1a7b461f654c26a725fa373211bb7ff17a9300058b205c61658ca940d"
     end
   
     resource "wheel" do
@@ -424,3 +423,4 @@ class Python < Formula
            ext = Extension('_tkinter', ['_tkinter.c', 'tkappinit.c'],
                            define_macros=[('WITH_APPINIT', 1)] + defs,
                            include_dirs = include_dirs,
+  

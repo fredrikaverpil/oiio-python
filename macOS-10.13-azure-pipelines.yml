@@ -43,11 +43,11 @@ jobs:
   #     addToPath: true
 
   # Install Python 3.6.4 because Azure does not provide this exact version
-  # homebrew-core commit 6e3f70c43a0cdd02280a1cfc78693ce1bc7eb5e4
+  # homebrew-core commit 13f26913d7671852c34f0be33bc9e05b19cad528
   - bash: |
       cd $(src.brew)
       brew install ./python.rb
-    displayName: Inject variable values into setup.py
+    displayName: Install Python via homebrew
 
   # Make setup.py ready by substituting placeholders
   - bash: |
