@@ -8,11 +8,11 @@ jobs:
 
   strategy:
     matrix:
-      windows-py36:
+      ubuntu-py36:
         python.version_major: '3'
         python.version_minor: '6'
         python.version_patch: '4'
-      windows-py37:
+      ubuntu-py37:
         python.version_major: '3'
         python.version_minor: '7'
         python.version_patch: '0'
