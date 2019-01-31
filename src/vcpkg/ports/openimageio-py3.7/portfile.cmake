@@ -32,8 +32,7 @@ endif()
 
 set(ENV{OIIO_PYTHON_VERSION} "3.7")
 
-# ENV AGENT_OS is an environment variable defined by Azure Pipelines
-if($ENV{AGENT_OS} STREQUAL "Linux")
+if(UNIX AND NOT APPLE)
     message("DEBUG - CURRENT DIRECTORY ${CMAKE_CURRENT_LIST_DIR}")
     file(COPY ${CMAKE_CURRENT_LIST_DIR}/FindOpenEXR.cmake DESTINATION ${SOURCE_PATH}/src/cmake/modules)
     file(COPY ${CMAKE_CURRENT_LIST_DIR}/imageio.cpp DESTINATION ${SOURCE_PATH}/src/libOpenImageIO)
