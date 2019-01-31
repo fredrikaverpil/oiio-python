@@ -45,9 +45,8 @@ jobs:
 
   # Install Python 3.6.4 because Azure does not provide this exact version
   - bash: |
-      brew install sphinx-doc
-      curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/13f26913d7671852c34f0be33bc9e05b19cad528/Formula/python.rb
-      brew install ./python.rb
+      curl -O https://www.python.org/ftp/python/3.6.4/python-3.6.4-macosx10.6.pkg
+      installer -pkg python-3.6.4-macosx10.6.pkg -target /Applications
     displayName: Install Python via homebrew
     condition: eq(variables['python.version'], '3.6')
 
