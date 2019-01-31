@@ -54,7 +54,7 @@ jobs:
       sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
       sudo apt-get update -y
       sudo apt-get install g++-7 -y
-    displayName: Install prerequisites for the Microsoft "vcpkg" manager
+    displayName: Install prerequisites for vcpkg
 
   # Install vcpkg
   - bash: |
