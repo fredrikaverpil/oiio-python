@@ -1,0 +1,137 @@
+# https://aka.ms/yaml
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azdevops&tabs=yaml
+# https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
+
+jobs:
+- job: 'oiio'
+
+  strategy:
+    matrix:
+      windows-py36:
+        python.version_major: '3'
+        python.version_minor: '6'
+        python.version_patch: '4'
+      windows-py37:
+        python.version_major: '3'
+        python.version_minor: '7'
+        python.version_patch: '0'
+
+  variables:
+    python.version: '$(python.version_major).$(python.version_minor)'
+    azure.vm_image: 'ubuntu-16.04'
+    src.python: '$(Agent.BuildDirectory)/s/src/python'
+    src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
+    install.vcpkg: $(Agent.BuildDirectory)/s/vcpkg
+    pypackage.version: '2.0.4+$(Build.BuildNumber)'
+    pypackage.os_name: 'Microsoft :: POSIX :: Linux'
+
+  pool:
+    vmImage: $(azure.vm_image)
+
+
+  steps:
+
+  # Select Python version to run on agent
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+      architecture: 'x64'
+      addToPath: true
+
+  # Make setup.py ready by substituting placeholders
+  - bash: |
+      cd $(src.python)
+      sed -i'' 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
+      sed -i'' 's/PYTHON_VERSION/$(python.version)/g' setup.py
+      sed -i'' 's/OS_NAME/$(pypackage.os_name)/g' setup.py
+      cat setup.py
+    displayName: Inject variable values into setup.py
+
+  # Install vcpkg prerequisites
+  - bash: |
+      sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+      sudo apt-get update -y
+      sudo apt-get install g++-7 -y
+    displayName: Install prerequisites for vcpkg
+
+  # Install vcpkg
+  - bash: |
+      git clone https://github.com/Microsoft/vcpkg.git
+      cd vcpkg
+      ./bootstrap-vcpkg.sh
+      ./vcpkg integrate install
+      ./vcpkg update
+      pwd
+    displayName: Install vcpkg
+
+  # Copy customized port(s) into place
+  - bash: |
+      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* $(install.vcpkg)/ports/python3
+      cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
+      cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
+    displayName: Override vcpkg port files
+
+  # Install oiio prerequisites via vcpkg
+  # - bash: |
+  #     cd vcpkg
+  #     ./vcpkg list
+  #     ./vcpkg install openexr:x64-linux
+  #     ./vcpkg install tiff:x64-linux
+  #     ./vcpkg install python3:x64-linux
+  #     ./vcpkg install pybind11:x64-linux
+  #     ./vcpkg list
+  #   condition: eq( variables['Agent.OS'], 'Linux' )
+  #   displayName: Install prerequisites
+
+  # Install oiio
+  - bash: |
+      $env:OIIO_PYTHON_VERSION = "$(python.version)"
+      cd vcpkg
+      ./vcpkg list
+      ./vcpkg install python3:x64-linux
+      ./vcpkg install pybind11:x64-linux
+      ./vcpkg install openimageio:x64-linux
+      ./vcpkg list
+    displayName: Install oiio
+
+  # Debug Logs
+  - bash: |
+      [ -f $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-dbg-err.log ] && cat $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-dbg-err.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-dbg-out.log ] && cat $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-dbg-out.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-rel-err.log ] && cat $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-rel-err.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-rel-out.log ] && cat $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-rel-out.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-dbg-err.log ] && cat $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-dbg-err.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-dbg-out.log ] && cat $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-dbg-out.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-rel-err.log ] && cat $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-rel-err.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-rel-out.log ] && cat $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-rel-out.log || echo "Not found"
+    displayName: Build logs for oiio
+
+  # View files from built and installed oiio
+  - bash: |
+      cd $(install.vcpkg)/installed/x64-linux/lib/python$(python.version)/site-packages
+      ls -alh
+    displayName: Show contents of oiio site-packages folder
+
+  # # Copy files into Python package
+  - bash: |
+      cp -r -v $(install.vcpkg)/installed/x64-linux/lib/python$(python.version)/site-packages/*.so $(src.python)/oiio
+    displayName: Copy files into oiio Python package
+
+  # Build wheel
+  - bash: |
+      cd $(src.python)
+      python -m pip install -U pip
+      pip install -U setuptools wheel
+      python setup.py bdist_wheel --python-tag=cp$(python.version_major)$(python.version_minor) --plat-name=linux-x86_64 --dist-dir="$(Build.ArtifactStagingDirectory)"
+      cd $(Build.ArtifactStagingDirectory)
+      ls -alh
+    displayName: Build wheel
+
+  # Publish wheel as build artifact (see "Summary" in Azure Pipelines build)
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/publish-build-artifacts?view=azdevops
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: drop-$(python.version)

@@ -158,7 +158,7 @@ jobs:
       cd $(src.python)
       python -m pip install -U pip
       pip install -U setuptools wheel
-      python setup.py bdist_wheel --python-tag=py$(python.version_major)$(python.version_minor) --plat-name=win-amd64 --dist-dir="$(Build.ArtifactStagingDirectory)"
+      python setup.py bdist_wheel --python-tag=cp$(python.version_major)$(python.version_minor) --plat-name=win-amd64 --dist-dir="$(Build.ArtifactStagingDirectory)"
       cd $(Build.ArtifactStagingDirectory)
       tree /F
     condition: eq( variables['Agent.OS'], 'Windows_NT' )

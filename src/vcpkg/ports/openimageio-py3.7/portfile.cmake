@@ -33,13 +33,27 @@ set(USE_LIBRAW ON)
 
 set(ENV{OIIO_PYTHON_VERSION} "3.7")
 
+if(UNIX AND NOT APPLE)
+    message("DEBUG - CURRENT DIRECTORY ${CMAKE_CURRENT_LIST_DIR}")
+    file(COPY ${CMAKE_CURRENT_LIST_DIR}/FindOpenEXR.cmake DESTINATION ${SOURCE_PATH}/src/cmake/modules)
+    file(COPY ${CMAKE_CURRENT_LIST_DIR}/imageio.cpp DESTINATION ${SOURCE_PATH}/src/libOpenImageIO)
+    message("DEBUG - COPIED FIND_OPEN_EXR FILE!")
+    message("DEBUG - COPIED PATCHED imageio.cpp FILE!")
+endif()
+
+if(WIN32)
+    set(HIDE_SYMBOLS ON)
+else()
+    set(HIDE_SYMBOLS OFF)
+endif()
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     PREFER_NINJA
     OPTIONS
         -DOIIO_BUILD_TOOLS=OFF
         -DOIIO_BUILD_TESTS=OFF
-        -DHIDE_SYMBOLS=ON
+        -DHIDE_SYMBOLS=${HIDE_SYMBOLS}
         -DUSE_DICOM=OFF
         -DUSE_FFMPEG=OFF
         -DUSE_FIELD3D=OFF
