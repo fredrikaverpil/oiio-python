@@ -43,9 +43,8 @@ jobs:
   #     addToPath: true
 
   # Install Python 3.6.4 because Azure does not provide this exact version
-  # homebrew-core commit 13f26913d7671852c34f0be33bc9e05b19cad528
   - bash: |
-      cd $(src.brew)
+      curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/13f26913d7671852c34f0be33bc9e05b19cad528/Formula/python.rb
       brew install ./python.rb
     displayName: Install Python via homebrew
 
