@@ -1,23 +1,40 @@
 # Build Docker image for this app using Azure Pipelines
 # http://docs.microsoft.com/azure/devops/pipelines/languages/docker?view=vsts
 
-variables:
-  azure.vm_image: 'ubuntu-16.04'
-  docker.root: '$(Agent.BuildDirectory)/s/docker'
-  docker.id: 'fredrikaverpil'
-  docker.image: 'oiio-centos7'
+jobs:
+- job: 'oiio'
 
-pool:
+  strategy:
+    matrix:
+      centos7-py36:
+        python.version_major: '3'
+        python.version_minor: '6'
+        # python.version_patch: '4'
+      # centos7-py37:
+      #   python.version_major: '3'
+      #   python.version_minor: '7'
+      #   python.version_patch: '0'
+
+  variables:
+    azure.vm_image: 'ubuntu-16.04'
+    python.version: '$(python.version_major).$(python.version_minor)'
+    docker.root: '$(Agent.BuildDirectory)/s/docker'
+    docker.file: 'Dockerfile-py$(python.version_major)$(python.version_minor)'
+    docker.id: 'fredrikaverpil'
+    docker.image: 'oiio-centos7-py$(python.version_major)$(python.version_minor)'
+
+  pool:
   vmImage: '$(azure.vm_image)'
 
-steps:
 
-- script: |
-    cd $(docker.root)/centos7
-    docker build -f Dockerfile -t $(docker.id)/$(docker.image) .
-    # docker login -u $(dockerId) -p $pswd
-    # docker push $(dockerId)/$(imageName)
-  # env:
-  #   pswd: $(dockerPassword)
-  displayName: 'Build Docker image'
-  # displayName: 'Build and push Docker image'
+  steps:
+
+  - script: |
+      cd $(docker.root)/centos7
+      docker build -f $(docker.file) -t $(docker.id)/$(docker.image) .
+      # docker login -u $(dockerId) -p $pswd
+      # docker push $(dockerId)/$(imageName)
+    # env:
+    #   pswd: $(dockerPassword)
+    displayName: 'Build Docker image'
+    # displayName: 'Build and push Docker image'
