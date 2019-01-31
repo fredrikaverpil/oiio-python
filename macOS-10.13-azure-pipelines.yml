@@ -129,9 +129,8 @@ jobs:
       artifactName: drop-$(python.version)
 
   # Tests
-  # Note pip3, python3 because we are using homebrew-installed Python
   - bash: |
-      pip3 install $(Build.ArtifactStagingDirectory)/*.whl
+      pip install $(Build.ArtifactStagingDirectory)/*.whl
       cd $(tests)
-      python3 test01.py
+      python test01.py
     displayName: Run rudimental test(s)
