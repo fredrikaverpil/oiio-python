@@ -22,6 +22,7 @@ jobs:
     azure.vm_image: 'macOS-10.13'
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
+    tests: '$(Agent.BuildDirectory)/s/tests'
     install.vcpkg: $(Agent.BuildDirectory)/s/vcpkg
     pypackage.version: '2.0.4+$(Build.BuildNumber)'
     pypackage.os_name: 'Microsoft :: MacOS'
@@ -125,3 +126,9 @@ jobs:
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: drop-$(python.version)
+
+  # Tests
+  - bash: |
+      cd $(tests)
+      python test01.py
+    displayName: Run rudimental test(s)
