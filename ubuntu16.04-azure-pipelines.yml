@@ -22,6 +22,7 @@ jobs:
     azure.vm_image: 'ubuntu-16.04'
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
+    install.vcpkg: $(Agent.BuildDirectory)/s/vcpkg
     pypackage.version: '2.0.4+$(Build.BuildNumber)'
     pypackage.os_name: 'Microsoft :: POSIX :: Linux'
 
@@ -67,9 +68,9 @@ jobs:
 
   # Copy customized port(s) into place
   - bash: |
-      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* /home/vsts/work/1/s/vcpkg/ports/python3
-      cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* /home/vsts/work/1/s/vcpkg/ports/openimageio
-      cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* /home/vsts/work/1/s/vcpkg/ports/pybind11
+      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* $(install.vcpkg)/ports/python3
+      cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
+      cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
     displayName: Override vcpkg port files
 
   # Install oiio prerequisites via vcpkg
@@ -97,25 +98,25 @@ jobs:
 
   # Debug Logs
   - bash: |
-      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-dbg-err.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-dbg-err.log || echo "Not found"
-      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-dbg-out.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-dbg-out.log || echo "Not found"
-      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-rel-err.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-rel-err.log || echo "Not found"
-      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-rel-out.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/config-x64-linux-rel-out.log || echo "Not found"
-      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-dbg-err.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-dbg-err.log || echo "Not found"
-      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-dbg-out.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-dbg-out.log || echo "Not found"
-      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-rel-err.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-rel-err.log || echo "Not found"
-      [ -f /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-rel-out.log ] && cat /home/vsts/work/1/s/vcpkg/buildtrees/openimageio/install-x64-linux-rel-out.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-dbg-err.log ] && cat $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-dbg-err.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-dbg-out.log ] && cat $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-dbg-out.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-rel-err.log ] && cat $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-rel-err.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-rel-out.log ] && cat $(install.vcpkg)/buildtrees/openimageio/config-x64-linux-rel-out.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-dbg-err.log ] && cat $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-dbg-err.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-dbg-out.log ] && cat $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-dbg-out.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-rel-err.log ] && cat $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-rel-err.log || echo "Not found"
+      [ -f $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-rel-out.log ] && cat $(install.vcpkg)/buildtrees/openimageio/install-x64-linux-rel-out.log || echo "Not found"
     displayName: Build logs for oiio
 
   # View files from built and installed oiio
   - bash: |
-      cd /home/vsts/work/1/s/vcpkg/installed/x64-linux/lib/python$(python.version)/site-packages
+      cd $(install.vcpkg)/installed/x64-linux/lib/python$(python.version)/site-packages
       ls
     displayName: Show contents of oiio site-packages folder tree
 
   # # Copy files into Python package
   - bash: |
-      cp -r -v /home/vsts/work/1/s/vcpkg/installed/x64-linux/lib/python$(python.version)/site-packages/*.so $(src.python)/oiio
+      cp -r -v $(install.vcpkg)/installed/x64-linux/lib/python$(python.version)/site-packages/*.so $(src.python)/oiio
     displayName: Copy files into oiio Python package
 
   # Build wheel
