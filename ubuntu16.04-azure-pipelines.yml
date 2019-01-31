@@ -73,17 +73,18 @@ jobs:
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
     displayName: Override vcpkg port files
 
-  # Install oiio prerequisites via vcpkg
-  # - bash: |
-  #     cd vcpkg
-  #     ./vcpkg list
-  #     ./vcpkg install openexr:x64-linux
-  #     ./vcpkg install tiff:x64-linux
-  #     ./vcpkg install python3:x64-linux
-  #     ./vcpkg install pybind11:x64-linux
-  #     ./vcpkg list
-  #   condition: eq( variables['Agent.OS'], 'Linux' )
-  #   displayName: Install prerequisites
+  # Install oiio extras
+  - bash: |
+      cd $(install.vcpkg)
+      .\vcpkg list
+      .\vcpkg install zlib:x64-osx
+      .\vcpkg install freetype:x64-osx
+      .\vcpkg install giflib:x64-osx
+      .\vcpkg install libwebp:x64-osx
+      .\vcpkg install openjpeg:x64-osx
+      .\vcpkg install ptex:x64-osx
+      .\vcpkg list
+    displayName: Install oiio extras
 
   # Install oiio
   - bash: |
