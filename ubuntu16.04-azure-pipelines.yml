@@ -64,7 +64,7 @@ jobs:
       ./vcpkg integrate install
       ./vcpkg update
       pwd
-    displayName: Install the Microsoft "vcpkg" manager
+    displayName: Install vcpkg
 
   # Copy customized port(s) into place
   - bash: |
