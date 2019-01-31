@@ -129,6 +129,7 @@ jobs:
 
   # Tests
   - bash: |
+      pip install $(Build.ArtifactStagingDirectory)/*.whl
       cd $(tests)
       python test01.py
     displayName: Run rudimental test(s)

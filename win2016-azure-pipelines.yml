@@ -165,6 +165,7 @@ jobs:
 
   # Tests
   - bash: |
+      python -m pip install --find-links=$(Build.ArtifactStagingDirectory) oiio
       cd $(tests)
       python test01.py
     displayName: Run rudimental test(s)
