@@ -67,12 +67,8 @@ jobs:
   - bash: |
       cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* $(install.vcpkg)/ports/python3
       cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
-    displayName: Override vcpkg port files
-
-  - bash: |
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
-    condition: eq(variables['python.version'], '3.7')
-    displayName: Override pybind11 vcpkg port files
+    displayName: Override vcpkg port files
 
   # Install pybind11 via vcpkg
   - bash: |
