@@ -95,24 +95,19 @@ jobs:
     condition: eq(variables['python.version'], '3.7')
     displayName: 'Workaround: Uninstall Python 3.7 Interpreter'
 
-  # Install oiio prerequisites via vcpkg
+  # Install oiio extras
   - powershell: |
       cd C:/vcpkg
       .\vcpkg list
-      .\vcpkg install pybind11:x64-windows
       .\vcpkg install zlib:x64-windows
-      .\vcpkg install tiff:x64-windows
-      .\vcpkg install libpng:x64-windows
-      .\vcpkg install openexr:x64-windows
       .\vcpkg install freetype:x64-windows
       .\vcpkg install giflib:x64-windows
       .\vcpkg install libwebp:x64-windows
       .\vcpkg install openjpeg:x64-windows
       .\vcpkg install ptex:x64-windows
-      .\vcpkg install libraw:x64-windows
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Install oiio prerequisites
+    displayName: Install oiio extras
 
   - powershell: |
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
