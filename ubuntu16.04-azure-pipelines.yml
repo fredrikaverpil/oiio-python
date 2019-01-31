@@ -39,7 +39,7 @@ jobs:
       architecture: 'x64'
       addToPath: true
 
-  Make setup.py ready by substituting placeholders
+  # Make setup.py ready by substituting placeholders
   - bash: |
       cd $(src.python)
       sed -i'' 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
