@@ -24,7 +24,7 @@ jobs:
     docker.image: 'oiio-centos7-py$(python.version_major)$(python.version_minor)'
 
   pool:
-  vmImage: '$(azure.vm_image)'
+    vmImage: '$(azure.vm_image)'
 
 
   steps:
