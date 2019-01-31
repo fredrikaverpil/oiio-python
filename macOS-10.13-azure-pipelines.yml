@@ -22,6 +22,7 @@ jobs:
     azure.vm_image: 'macOS-10.13'
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
+    src.brew: '$(Agent.BuildDirectory)/s/src/brew'
     tests: '$(Agent.BuildDirectory)/s/tests'
     install.vcpkg: $(Agent.BuildDirectory)/s/vcpkg
     pypackage.version: '2.0.4+$(Build.BuildNumber)'
@@ -33,13 +34,20 @@ jobs:
 
   steps:
 
-  # Select Python version to run on agent
-  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
-  - task: UsePythonVersion@0
-    inputs:
-      versionSpec: '$(python.version).$(python.version_patch)'
-      architecture: 'x64'
-      addToPath: true
+  # # Select Python version to run on agent
+  # # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
+  # - task: UsePythonVersion@0
+  #   inputs:
+  #     versionSpec: '$(python.version).$(python.version_patch)'
+  #     architecture: 'x64'
+  #     addToPath: true
+
+  # Install Python 3.6.4 because Azure does not provide this exact version
+  # homebrew-core commit 6e3f70c43a0cdd02280a1cfc78693ce1bc7eb5e4
+  - bash: |
+      cd $(src.brew)
+      brew install python.rb
+    displayName: Inject variable values into setup.py
 
   # Make setup.py ready by substituting placeholders
   - bash: |
@@ -128,8 +136,9 @@ jobs:
       artifactName: drop-$(python.version)
 
   # Tests
+  # Note pip3, python3 because we are using homebrew-installed Python
   - bash: |
-      pip install $(Build.ArtifactStagingDirectory)/*.whl
+      pip3 install $(Build.ArtifactStagingDirectory)/*.whl
       cd $(tests)
-      python test01.py
+      python3 test01.py
     displayName: Run rudimental test(s)
