@@ -34,13 +34,14 @@ jobs:
 
   steps:
 
-  # # Select Python version to run on agent
-  # # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
-  # - task: UsePythonVersion@0
-  #   inputs:
-  #     versionSpec: '$(python.version).$(python.version_patch)'
-  #     architecture: 'x64'
-  #     addToPath: true
+  # Select Python version to run on agent
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version).$(python.version_patch)'
+      architecture: 'x64'
+      addToPath: true
+    condition: ne(variables['python.version'], '3.6')
 
   # Install Python 3.6.4 because Azure does not provide this exact version
   - bash: |
@@ -49,6 +50,7 @@ jobs:
       curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/13f26913d7671852c34f0be33bc9e05b19cad528/Formula/python.rb
       brew install ./python.rb
     displayName: Install Python via homebrew
+    condition: eq(variables['python.version'], '3.6')
 
   # Make setup.py ready by substituting placeholders
   - bash: |
