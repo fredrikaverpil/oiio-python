@@ -10,16 +10,23 @@ OpenImageIO Python 3.x package.
 
 ## About the project
 
-We are attempting to build oiio for Python 3.x (wheels) using [vcpkg](https://github.com/Microsoft/vcpkg) on Windows, Linux and macOS.
+OpenImageIO is built using [vcpkg](https://github.com/Microsoft/vcpkg) and packaged into Python wheels on Windows, Linux and macOS platforms (provided by [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/)).
+
+To make this work, some customization of the vcpkg port files were necessary and thus these modifications are stored in this repository.
 
 ## Download wheels
 
-Since the project is still in a research phase, no releases have been made just yet. Instead, look at the Azure Pipeline CI builds where wheels are stored as build artifacts.
+Since the project is still in a research phase, no releases have been made just yet. Instead, look at the Azure Pipeline CI builds corresponding to your platform and Python version, where wheels are stored as build artifacts.
 
-For each Azure Pipelines build, click the "Summary" link, and you will see the build artifacts (zipped Python wheels).
+When browsing an Azure Pipelines build, click the "Summary" link, and you will see the build artifacts (zipped Python wheels).
+
+## Usage
+
+- Install the wheel: `pip install ...`
+- From within Python, import OpenImageIO: `from oiio import OpenImageIO as oiio`
 
 ## Notes
 
-- Official oiio repository at [OpenImageIO/oiio](https://github.com/OpenImageIO/oiio), note the `.travis.yml` and `appveyor.yml`
+- Official OpenImageIO repository at [OpenImageIO/oiio](https://github.com/OpenImageIO/oiio), note the `.travis.yml` and `appveyor.yml`
 - The python3 files for oiio at [vcpkg/ports/python3](https://github.com/Microsoft/vcpkg/tree/master/ports/python3)
 - The vcpkg files for oiio at [vcpkg/ports/openimageio](https://github.com/Microsoft/vcpkg/tree/master/ports/openimageio)
