@@ -46,7 +46,6 @@ jobs:
   # Install Python 3.6.4 because Azure does not provide this exact version
   - bash: |
       brew install sphinx-doc
-      brew uninstall --ignore-dependencies python
       curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/13f26913d7671852c34f0be33bc9e05b19cad528/Formula/python.rb
       brew install ./python.rb
     displayName: Install Python via homebrew
