@@ -22,7 +22,7 @@ jobs:
     azure.vm_image: 'macOS-10.13'
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
-    src.brew: '$(Agent.BuildDirectory)/s/src/brew'
+    src.brew: '$(Agent.BuildDirectory)/s/src/homebrew'
     tests: '$(Agent.BuildDirectory)/s/tests'
     install.vcpkg: $(Agent.BuildDirectory)/s/vcpkg
     pypackage.version: '2.0.4+$(Build.BuildNumber)'
