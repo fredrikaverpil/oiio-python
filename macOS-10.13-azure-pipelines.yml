@@ -46,7 +46,7 @@ jobs:
   # homebrew-core commit 6e3f70c43a0cdd02280a1cfc78693ce1bc7eb5e4
   - bash: |
       cd $(src.brew)
-      brew install python.rb
+      brew install ./python.rb
     displayName: Inject variable values into setup.py
 
   # Make setup.py ready by substituting placeholders
