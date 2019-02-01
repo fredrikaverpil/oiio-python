@@ -30,3 +30,5 @@ When browsing an Azure Pipelines build, click the "Summary" link, and you will s
 - Official OpenImageIO repository at [OpenImageIO/oiio](https://github.com/OpenImageIO/oiio), note the `.travis.yml` and `appveyor.yml`
 - The python3 files for oiio at [vcpkg/ports/python3](https://github.com/Microsoft/vcpkg/tree/master/ports/python3)
 - The vcpkg files for oiio at [vcpkg/ports/openimageio](https://github.com/Microsoft/vcpkg/tree/master/ports/openimageio)
+- Get SHA512 of file:
+  - macOS: `openssl dgst -sha512 [FILE]`
