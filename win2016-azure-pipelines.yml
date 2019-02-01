@@ -105,6 +105,7 @@ jobs:
       .\vcpkg install freetype:x64-windows
       .\vcpkg install giflib:x64-windows
       .\vcpkg install libwebp:x64-windows
+      .\vcpkg install openjpeg:x64-windows
       .\vcpkg install ptex:x64-windows
       .\vcpkg list
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
