@@ -25,6 +25,8 @@ When browsing an Azure Pipelines build, click the "Summary" link, and you will s
 - Install the wheel: `pip install ...`
 - From within Python, import OpenImageIO: `from oiio import OpenImageIO as oiio`
 
+See the `tests` folder for code examples used to test the built wheels' functionality.
+
 ## Notes
 
 - Official OpenImageIO repository at [OpenImageIO/oiio](https://github.com/OpenImageIO/oiio), note the `.travis.yml` and `appveyor.yml`
