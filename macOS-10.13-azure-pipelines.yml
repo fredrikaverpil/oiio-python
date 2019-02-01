@@ -94,6 +94,14 @@ jobs:
       ./vcpkg list
     displayName: Install oiio extras
 
+  # debug
+  - bash: |
+      echo "---------------- config-x64-osx-dbg-out.log ------------------"
+      cat /Users/vsts/agent/2.144.2/work/1/s/vcpkg/buildtrees/openjpeg/config-x64-osx-dbg-out.log
+      echo "---------------- config-x64-osx-dbg-err.log ------------------"
+      cat /Users/vsts/agent/2.144.2/work/1/s/vcpkg/buildtrees/openjpeg/config-x64-osx-dbg-err.log
+    displayName: Install oiio extras
+
   # Install oiio prerequisites via vcpkg
   - bash: |
       cd $(install.vcpkg)
