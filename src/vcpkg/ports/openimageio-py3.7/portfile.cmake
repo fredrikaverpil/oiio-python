@@ -63,7 +63,7 @@ vcpkg_configure_cmake(
         -DUSE_NUKE=OFF
         -DUSE_OCIO=OFF
         -DUSE_OPENCV=OFF
-        -DUSE_OPENJPEG=OFF
+        -DUSE_OPENJPEG=ON
         -DUSE_OPENSSL=OFF
         -DUSE_PTEX=ON
         -DUSE_PYTHON=ON

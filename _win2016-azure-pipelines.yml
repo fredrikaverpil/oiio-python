@@ -1,0 +1,181 @@
+# https://aka.ms/yaml
+# https://aka.ms/hosted-agent-software
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
+# https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
+
+jobs:
+- job: 'oiio'
+
+  strategy:
+    matrix:
+      windows-py36:
+        python.version_major: '3'
+        python.version_minor: '6'
+        python.version_patch: '4'
+      windows-py37:
+        python.version_major: '3'
+        python.version_minor: '7'
+        python.version_patch: '0'
+
+  variables:
+    python.version: '$(python.version_major).$(python.version_minor)'
+    azure.vm_image: 'vs2017-win2016'
+    src.python: '$(Agent.BuildDirectory)/s/src/python'
+    src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
+    install.vcpkg: 'C:/vcpkg'
+    tests: '$(Agent.BuildDirectory)/s/tests'
+    pypackage.version: '2.0.4+$(Build.BuildNumber)'
+    pypackage.os_name: 'Microsoft :: Windows'
+
+  pool:
+    vmImage: $(azure.vm_image)
+
+
+  steps:
+
+  # Select Python version to run on agent
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version).$(python.version_patch)'
+      architecture: 'x64'
+      addToPath: true
+
+  # Make setup.py ready by substituting placeholders
+  - powershell: |
+      cd $(src.python)
+      sed -i 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
+      sed -i 's/PYTHON_VERSION/$(python.version)/g' setup.py
+      sed -i 's/OS_NAME/$(pypackage.os_name)/g' setup.py
+      cat setup.py
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Inject variable values into setup.py
+
+  # Instal vcpkg
+  - powershell: |
+      cd C:/
+      git clone https://github.com/Microsoft/vcpkg.git
+      cd vcpkg
+      .\bootstrap-vcpkg.bat
+      .\vcpkg integrate install
+      .\vcpkg update
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Install vcpkg
+
+  # Copy customized port(s) into place
+  - powershell: |
+      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version).$(python.version_patch)/* $(install.vcpkg)/ports/python3
+      cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
+      cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Override vcpkg port files
+
+  # Install Python Interpreter to default location
+  # We have to do this because pybind11 currently can't find the
+  # Azure-provided Python:
+  # Could NOT find PythonInterp (missing: PYTHON_EXECUTABLE) (Required is at least version "3.7")
+  # Fore more info, see issue #7:
+  # https://github.com/fredrikaverpil/oiio-python/issues/7#issuecomment-458042455
+  - powershell: |
+      choco install python --version $(python.version).$(python.version_patch)
+      if (Test-Path "C:/Python37/python.exe") { echo "PYTHON INTERPRETER FOUND!" }
+    condition: eq(variables['python.version'], '3.7')
+    displayName: 'Workaround: Install Python 3.7 Interpreter'
+
+  # Install pybind11 via vcpkg
+  - powershell: |
+      cd $(install.vcpkg)
+      .\vcpkg list
+      .\vcpkg install pybind11:x64-windows
+      .\vcpkg list
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Install pybind11
+
+  # Uninstall Python Interpreter
+  - powershell: |
+      if (Test-Path "C:/Python37/python.exe") { choco uninstall python -y --version $(python.version).$(python.version_patch) }
+    condition: eq(variables['python.version'], '3.7')
+    displayName: 'Workaround: Uninstall Python 3.7 Interpreter'
+
+  # Install oiio extras
+  - powershell: |
+      cd $(install.vcpkg)
+      .\vcpkg list
+      .\vcpkg install zlib:x64-windows
+      .\vcpkg install freetype:x64-windows
+      .\vcpkg install libwebp:x64-windows
+      ./vcpkg install giflib:x64-windows
+      .\vcpkg install openjpeg:x64-windows
+      .\vcpkg install ptex:x64-windows
+      .\vcpkg list
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Install oiio extras
+
+  - powershell: |
+      $env:OIIO_PYTHON_VERSION = "$(python.version)"
+      cd $(install.vcpkg)
+      .\vcpkg list
+      .\vcpkg install openimageio:x64-windows
+      .\vcpkg list
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Install oiio
+
+  # Debug logs
+  - powershell: |
+      if (Test-Path "$(install.vcpkg)/buildtrees/openimageio/config-x64-windows-err.log") { cat $(install.vcpkg)/buildtrees/openimageio/config-x64-windows-err.log }
+      if (Test-Path "$(install.vcpkg)/buildtrees/openimageio/config-x64-windows-out.log") { cat $(install.vcpkg)/buildtrees/openimageio/config-x64-windows-out.log }
+      if (Test-Path "$(install.vcpkg)/buildtrees/openimageio/install-x64-windows-dbg-err.log") { cat $(install.vcpkg)/buildtrees/openimageio/install-x64-windows-dbg-err.log }
+      if (Test-Path "$(install.vcpkg)/buildtrees/openimageio/install-x64-windows-dbg-out.log") { cat $(install.vcpkg)/buildtrees/openimageio/install-x64-windows-dbg-out.log }
+      if (Test-Path "$(install.vcpkg)/buildtrees/openimageio/install-x64-windows-rel-err.log") { cat $(install.vcpkg)/buildtrees/openimageio/install-x64-windows-rel-err.log }
+      if (Test-Path "$(install.vcpkg)/buildtrees/openimageio/install-x64-windows-rel-out.log") { cat $(install.vcpkg)/buildtrees/openimageio/install-x64-windows-rel-out.log }
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Build logs for oiio
+
+  # View files from built and installed oiio
+  - powershell: |
+      cd $(install.vcpkg)/installed/x64-windows/bin
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Show contents of oiio bin folder tree
+  - powershell: |
+      cd $(install.vcpkg)/installed/x64-windows/lib/python$(python.version)/site-packages
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Show contents of oiio site-packages folder tree
+
+  # Copy files into Python package
+  - powershell: |
+      cp -r -v $(install.vcpkg)/installed/x64-windows/lib/python$(python.version)/site-packages/*.pyd $(src.python)/oiio
+      cp -r -v $(install.vcpkg)/installed/x64-windows/bin/*.dll $(src.python)/oiio
+      cd $(src.python)
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Copy files into oiio Python package
+  - powershell: |
+      cd $(src.python)
+      python -m pip install -U pip
+      pip install -U setuptools wheel
+      python setup.py bdist_wheel --python-tag=cp$(python.version_major)$(python.version_minor) --plat-name=win-amd64 --dist-dir="$(Build.ArtifactStagingDirectory)"
+      cd $(Build.ArtifactStagingDirectory)
+      tree /F
+    condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Build wheel
+
+  # Publish wheel as build artifact (see "Summary" in Azure Pipelines build)
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/publish-build-artifacts?view=azdevops
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      artifactName: drop-$(python.version)
+
+  # Tests
+  - powershell: |
+      cd $(tests)
+      python --version
+      pip list
+      dir
+      python -m pip install --find-links=$(Build.ArtifactStagingDirectory) oiio
+      pip install pytest
+      pip list
+      pytest --verbose
+    displayName: Run rudimental test(s)
