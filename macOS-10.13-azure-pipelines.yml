@@ -41,7 +41,6 @@ jobs:
       versionSpec: '$(python.version).$(python.version_patch)'
       architecture: 'x64'
       addToPath: true
-    condition: ne(variables['python.version'], '3.6')
 
   # Make setup.py ready by substituting placeholders
   - bash: |
