@@ -1,6 +1,6 @@
 # https://aka.ms/yaml
+# https://aka.ms/hosted-agent-software
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
-# https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azdevops&tabs=yaml
 # https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
 
 jobs:
@@ -23,6 +23,7 @@ jobs:
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
     install.vcpkg: 'C:/vcpkg'
+    tests: '$(Agent.BuildDirectory)/s/tests'
     pypackage.version: '2.0.4+$(Build.BuildNumber)'
     pypackage.os_name: 'Microsoft :: Windows'
 
@@ -36,7 +37,7 @@ jobs:
   # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
   - task: UsePythonVersion@0
     inputs:
-      versionSpec: '$(python.version)'
+      versionSpec: '$(python.version).$(python.version_patch)'
       architecture: 'x64'
       addToPath: true
 
@@ -63,7 +64,7 @@ jobs:
 
   # Copy customized port(s) into place
   - powershell: |
-      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* $(install.vcpkg)/ports/python3
+      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version).$(python.version_patch)/* $(install.vcpkg)/ports/python3
       cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
@@ -166,3 +167,15 @@ jobs:
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: drop-$(python.version)
+
+  # Tests
+  - powershell: |
+      cd $(tests)
+      python --version
+      pip list
+      dir
+      python -m pip install --find-links=$(Build.ArtifactStagingDirectory) oiio
+      pip install pytest
+      pip list
+      pytest --verbose
+    displayName: Run rudimental test(s)

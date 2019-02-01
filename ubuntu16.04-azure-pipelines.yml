@@ -1,6 +1,6 @@
 # https://aka.ms/yaml
+# https://aka.ms/hosted-agent-software
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
-# https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azdevops&tabs=yaml
 # https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
 
 jobs:
@@ -8,11 +8,11 @@ jobs:
 
   strategy:
     matrix:
-      windows-py36:
+      ubuntu-py36:
         python.version_major: '3'
         python.version_minor: '6'
-        python.version_patch: '4'
-      windows-py37:
+        python.version_patch: '5'
+      ubuntu-py37:
         python.version_major: '3'
         python.version_minor: '7'
         python.version_patch: '0'
@@ -22,6 +22,7 @@ jobs:
     azure.vm_image: 'ubuntu-16.04'
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
+    tests: '$(Agent.BuildDirectory)/s/tests'
     install.vcpkg: $(Agent.BuildDirectory)/s/vcpkg
     pypackage.version: '2.0.4+$(Build.BuildNumber)'
     pypackage.os_name: 'Microsoft :: POSIX :: Linux'
@@ -36,7 +37,7 @@ jobs:
   # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/use-python-version?view=azdevops
   - task: UsePythonVersion@0
     inputs:
-      versionSpec: '$(python.version)'
+      versionSpec: '$(python.version).$(python.version_patch)'
       architecture: 'x64'
       addToPath: true
 
@@ -68,7 +69,7 @@ jobs:
 
   # Copy customized port(s) into place
   - bash: |
-      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* $(install.vcpkg)/ports/python3
+      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version).$(python.version_patch)/* $(install.vcpkg)/ports/python3
       cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
     displayName: Override vcpkg port files
@@ -136,3 +137,14 @@ jobs:
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: drop-$(python.version)
+
+  # Tests
+  - bash: |
+      cd $(tests)
+      python --version
+      pip list
+      pip install $(Build.ArtifactStagingDirectory)/*.whl
+      pip install pytest
+      pip list
+      pytest --verbose
+    displayName: Run rudimental test(s)
