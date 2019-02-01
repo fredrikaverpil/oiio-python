@@ -88,18 +88,10 @@ jobs:
       ./vcpkg install zlib:x64-osx
       ./vcpkg install freetype:x64-osx
       ./vcpkg install libwebp:x64-osx
-      ./vcpkg install openjpeg:x64-osx
+      ./vcpkg install libgif:x64-osx
       ./vcpkg install ptex:x64-osx
       ./vcpkg list
     displayName: Install oiio extras
-
-  # debug
-  - bash: |
-      echo "---------------- config-x64-osx-dbg-out.log ------------------"
-      cat /Users/vsts/agent/2.144.2/work/1/s/vcpkg/buildtrees/openjpeg/config-x64-osx-dbg-out.log
-      echo "---------------- config-x64-osx-dbg-err.log ------------------"
-      cat /Users/vsts/agent/2.144.2/work/1/s/vcpkg/buildtrees/openjpeg/config-x64-osx-dbg-err.log
-    displayName: Logs for openjpeg
 
   # Install oiio prerequisites via vcpkg
   - bash: |

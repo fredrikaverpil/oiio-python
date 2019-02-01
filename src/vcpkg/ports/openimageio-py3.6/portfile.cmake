@@ -58,12 +58,12 @@ vcpkg_configure_cmake(
         -DUSE_FFMPEG=OFF
         -DUSE_FIELD3D=OFF
         -DUSE_FREETYPE=ON
-        -DUSE_GIF=OFF
+        -DUSE_GIF=ON
         -DUSE_LIBRAW=${USE_LIBRAW}
         -DUSE_NUKE=OFF
         -DUSE_OCIO=OFF
         -DUSE_OPENCV=OFF
-        -DUSE_OPENJPEG=ON
+        -DUSE_OPENJPEG=OFF
         -DUSE_OPENSSL=OFF
         -DUSE_PTEX=ON
         -DUSE_PYTHON=ON
