@@ -27,7 +27,6 @@ jobs:
     install.vcpkg: $(Agent.BuildDirectory)/s/vcpkg
     pypackage.version: '2.0.4+$(Build.BuildNumber)'
     pypackage.os_name: 'Microsoft :: MacOS'
-    VCPKG_ALLOW_APPLE_CLANG: '1'
 
   pool:
     vmImage: $(azure.vm_image)
@@ -59,6 +58,7 @@ jobs:
 
   # Install vcpkg
   - bash: |
+      set VCPKG_ALLOW_APPLE_CLANG
       brew install clang
       git clone https://github.com/Microsoft/vcpkg.git
       cd vcpkg
