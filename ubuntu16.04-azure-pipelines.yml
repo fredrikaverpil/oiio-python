@@ -82,7 +82,6 @@ jobs:
       ./vcpkg install freetype:x64-linux
       ./vcpkg install giflib:x64-linux
       ./vcpkg install libwebp:x64-linux
-      ./vcpkg install openjpeg:x64-linux
       ./vcpkg install ptex:x64-linux
       ./vcpkg list
     displayName: Install oiio extras
