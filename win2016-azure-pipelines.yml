@@ -100,8 +100,8 @@ jobs:
       .\vcpkg list
       .\vcpkg install zlib:x64-windows
       .\vcpkg install freetype:x64-windows
-      .\vcpkg install giflib:x64-windows
-      .\vcpkg install openjpeg:x64-windows
+      # .\vcpkg install giflib:x64-windows  # https://github.com/fredrikaverpil/oiio-python/issues/27
+      # .\vcpkg install openjpeg:x64-windows  # https://github.com/fredrikaverpil/oiio-python/issues/26
       .\vcpkg install libwebp:x64-windows
       .\vcpkg install ptex:x64-windows
       .\vcpkg list

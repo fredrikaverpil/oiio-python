@@ -65,11 +65,6 @@ jobs:
       ./vcpkg integrate install
     displayName: Install vcpkg
 
-  # Install vcpkg
-  - bash: |
-      brew install clang
-    displayName: Install clang
-
   # Copy customized port(s) into place
   - bash: |
       cp -r -v $(src.vcpkg)/ports/python3-py$(python.version).$(python.version_patch)/* $(install.vcpkg)/ports/python3
@@ -92,8 +87,8 @@ jobs:
       ./vcpkg list
       ./vcpkg install zlib:x64-osx
       ./vcpkg install freetype:x64-osx
-      ./vcpkg install giflib:x64-osx  # https://github.com/fredrikaverpil/oiio-python/issues/27
-      ./vcpkg install openjpeg:x64-osx  # https://github.com/fredrikaverpil/oiio-python/issues/26
+      # ./vcpkg install giflib:x64-osx  # https://github.com/fredrikaverpil/oiio-python/issues/27
+      # ./vcpkg install openjpeg:x64-osx  # https://github.com/fredrikaverpil/oiio-python/issues/26
       ./vcpkg install libwebp:x64-osx
       ./vcpkg install ptex:x64-osx
       ./vcpkg list
