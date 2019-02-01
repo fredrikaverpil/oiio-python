@@ -48,7 +48,6 @@ jobs:
       sed -i 's/PYTHON_VERSION/$(python.version)/g' setup.py
       sed -i 's/OS_NAME/$(pypackage.os_name)/g' setup.py
       cat setup.py
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Inject variable values into setup.py
 
   # Instal vcpkg
@@ -59,7 +58,6 @@ jobs:
       .\bootstrap-vcpkg.bat
       .\vcpkg integrate install
       .\vcpkg update
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install vcpkg
 
   # Copy customized port(s) into place
@@ -67,7 +65,6 @@ jobs:
       cp -r -v $(src.vcpkg)/ports/python3-py$(python.version).$(python.version_patch)/* $(install.vcpkg)/ports/python3
       cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Override vcpkg port files
 
   # Install Python Interpreter to default location
@@ -86,10 +83,10 @@ jobs:
   - powershell: |
       cd $(install.vcpkg)
       .\vcpkg list
+      .\vcpkg install python3:x64-windows
       .\vcpkg install pybind11:x64-windows
       .\vcpkg list
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
-    displayName: Install pybind11
+    displayName: Install python3 and pybind11
 
   # Uninstall Python Interpreter
   - powershell: |
@@ -104,19 +101,17 @@ jobs:
       .\vcpkg install zlib:x64-windows
       .\vcpkg install freetype:x64-windows
       .\vcpkg install giflib:x64-windows
+      .\vcpkg install openjpeg:x64-windows
       .\vcpkg install libwebp:x64-windows
       .\vcpkg install ptex:x64-windows
       .\vcpkg list
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio extras
 
   - powershell: |
-      $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd $(install.vcpkg)
       .\vcpkg list
       .\vcpkg install openimageio:x64-windows
       .\vcpkg list
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Install oiio
 
   # Debug logs
@@ -127,19 +122,16 @@ jobs:
       if (Test-Path "$(install.vcpkg)/buildtrees/openimageio/install-x64-windows-dbg-out.log") { cat $(install.vcpkg)/buildtrees/openimageio/install-x64-windows-dbg-out.log }
       if (Test-Path "$(install.vcpkg)/buildtrees/openimageio/install-x64-windows-rel-err.log") { cat $(install.vcpkg)/buildtrees/openimageio/install-x64-windows-rel-err.log }
       if (Test-Path "$(install.vcpkg)/buildtrees/openimageio/install-x64-windows-rel-out.log") { cat $(install.vcpkg)/buildtrees/openimageio/install-x64-windows-rel-out.log }
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Build logs for oiio
 
   # View files from built and installed oiio
   - powershell: |
       cd $(install.vcpkg)/installed/x64-windows/bin
       tree /F
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Show contents of oiio bin folder tree
   - powershell: |
       cd $(install.vcpkg)/installed/x64-windows/lib/python$(python.version)/site-packages
       tree /F
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Show contents of oiio site-packages folder tree
 
   # Copy files into Python package
@@ -148,7 +140,6 @@ jobs:
       cp -r -v $(install.vcpkg)/installed/x64-windows/bin/*.dll $(src.python)/oiio
       cd $(src.python)
       tree /F
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Copy files into oiio Python package
   - powershell: |
       cd $(src.python)
@@ -157,7 +148,6 @@ jobs:
       python setup.py bdist_wheel --python-tag=cp$(python.version_major)$(python.version_minor) --plat-name=win-amd64 --dist-dir="$(Build.ArtifactStagingDirectory)"
       cd $(Build.ArtifactStagingDirectory)
       tree /F
-    condition: eq( variables['Agent.OS'], 'Windows_NT' )
     displayName: Build wheel
 
   # Publish wheel as build artifact (see "Summary" in Azure Pipelines build)

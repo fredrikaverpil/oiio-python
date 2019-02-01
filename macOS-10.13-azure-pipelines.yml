@@ -58,8 +58,7 @@ jobs:
 
   # Install vcpkg
   - bash: |
-      echo "export VCPKG_ALLOW_APPLE_CLANG=1" > ~/.bash_profile
-      brew install clang
+      brew install gcc6 clang
       git clone https://github.com/Microsoft/vcpkg.git
       cd vcpkg
       ./bootstrap-vcpkg.sh
@@ -88,25 +87,15 @@ jobs:
       ./vcpkg list
       ./vcpkg install zlib:x64-osx
       ./vcpkg install freetype:x64-osx
-      ./vcpkg install giflib:x64-osx
-      ./vcpkg install openjpeg:x64-osx
+      # ./vcpkg install giflib:x64-osx  # https://github.com/fredrikaverpil/oiio-python/issues/27
+      # ./vcpkg install openjpeg:x64-osx  # https://github.com/fredrikaverpil/oiio-python/issues/26
       ./vcpkg install libwebp:x64-osx
       ./vcpkg install ptex:x64-osx
       ./vcpkg list
     displayName: Install oiio extras
 
-  # Install oiio prerequisites via vcpkg
-  - bash: |
-      cd $(install.vcpkg)
-      ./vcpkg list
-      ./vcpkg install openexr:x64-osx
-      ./vcpkg install tiff:x64-osx
-      ./vcpkg list
-    displayName: Install oiio prerequisites
-
   # Install oiio
   - bash: |
-      $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd $(install.vcpkg)
       ./vcpkg list
       ./vcpkg install openimageio:x64-osx
