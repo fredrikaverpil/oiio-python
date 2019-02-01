@@ -164,8 +164,13 @@ jobs:
       artifactName: drop-$(python.version)
 
   # Tests
-  - bash: |
+  - powershell: |
+      python --version
+      pip list
+      cd $(Build.ArtifactStagingDirectory)
+      dir
       python -m pip install --find-links=$(Build.ArtifactStagingDirectory) oiio
+      pip list
       cd $(tests)
       python test01.py
     displayName: Run rudimental test(s)
