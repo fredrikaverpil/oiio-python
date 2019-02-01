@@ -130,10 +130,11 @@ jobs:
 
   # Tests
   - bash: |
+      cd $(Build.ArtifactStagingDirectory)
       python --version
       pip list
       pip install $(Build.ArtifactStagingDirectory)/*.whl
+      pip install pytest
       pip list
-      cd $(tests)
-      python test01.py
+      pytest --verbose tests
     displayName: Run rudimental test(s)

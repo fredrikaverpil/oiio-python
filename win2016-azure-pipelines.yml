@@ -165,12 +165,12 @@ jobs:
 
   # Tests
   - powershell: |
+      cd $(Build.ArtifactStagingDirectory)
       python --version
       pip list
-      cd $(Build.ArtifactStagingDirectory)
       dir
       python -m pip install --find-links=$(Build.ArtifactStagingDirectory) oiio
+      pip install pytest
       pip list
-      cd $(tests)
-      python test01.py
+      pytest --verbose tests
     displayName: Run rudimental test(s)
