@@ -1,4 +1,5 @@
 # https://aka.ms/yaml
+# https://aka.ms/hosted-agent-software
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azdevops&tabs=yaml
 # https://github.com/OpenImageIO/oiio/blob/master/INSTALL.md
@@ -22,6 +23,7 @@ jobs:
     azure.vm_image: 'macOS-10.13'
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
+    tests: '$(Agent.BuildDirectory)/s/tests'
     install.vcpkg: $(Agent.BuildDirectory)/s/vcpkg
     pypackage.version: '2.0.4+$(Build.BuildNumber)'
     pypackage.os_name: 'Microsoft :: MacOS'
@@ -65,18 +67,19 @@ jobs:
 
   # Copy customized port(s) into place
   - bash: |
-      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version)/* $(install.vcpkg)/ports/python3
+      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version).$(python.version_patch)/* $(install.vcpkg)/ports/python3
       cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
     displayName: Override vcpkg port files
 
-  # Install pybind11 via vcpkg
+  # Install python3 and pybind11 via vcpkg
   - bash: |
       cd $(install.vcpkg)
       ./vcpkg list
+      ./vcpkg install python3:x64-osx
       ./vcpkg install pybind11:x64-osx
       ./vcpkg list
-    displayName: Install pybind11
+    displayName: Install python3 and pybind11
 
   # Install oiio prerequisites via vcpkg
   - bash: |
@@ -125,3 +128,14 @@ jobs:
     inputs:
       pathtoPublish: '$(Build.ArtifactStagingDirectory)'
       artifactName: drop-$(python.version)
+
+  # Tests
+  - bash: |
+      cd $(tests)
+      python --version
+      pip list
+      pip install $(Build.ArtifactStagingDirectory)/*.whl
+      pip install pytest
+      pip list
+      pytest --verbose
+    displayName: Run rudimental test(s)
