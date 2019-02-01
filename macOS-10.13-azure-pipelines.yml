@@ -58,7 +58,7 @@ jobs:
 
   # Install vcpkg
   - bash: |
-      set VCPKG_ALLOW_APPLE_CLANG
+      export VCPKG_ALLOW_APPLE_CLANG=1
       brew install clang
       git clone https://github.com/Microsoft/vcpkg.git
       cd vcpkg
