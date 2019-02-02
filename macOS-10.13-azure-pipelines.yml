@@ -26,7 +26,6 @@ jobs:
     tests: '$(Agent.BuildDirectory)/s/tests'
     install.vcpkg: $(Agent.BuildDirectory)/s/vcpkg
     oiio.version: '2.0.4'
-    pypackage.version: '$(oiio.version)+$(Build.BuildNumber)'
     pypackage.os_name: 'Microsoft :: MacOS'
 
   pool:
@@ -52,7 +51,7 @@ jobs:
   # Make setup.py ready by substituting placeholders
   - bash: |
       cd $(src.python)
-      sed -i'' -e 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
+      sed -i'' -e 's/PACKAGE_VERSION/$(oiio.version)+$(build.date)/g' setup.py
       sed -i'' -e 's/PYTHON_VERSION/$(python.version)/g' setup.py
       sed -i'' -e 's/OS_NAME/$(pypackage.os_name)/g' setup.py
       cat setup.py
