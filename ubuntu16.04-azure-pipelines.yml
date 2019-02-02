@@ -165,8 +165,8 @@ jobs:
       action: 'edit' # Options: create, edit, discard
       target: '$(build.sourceVersion)' # Required when action == create || action == edit
       tagSource: 'Git tag' # Required when action == create. Options: auto, manual
-      tag: '$(oiio.version)-$(build.date)' # Required when action == edit || action == discard || tagSource == manual
-      title: '$(oiio.version)-$(build.date)'
+      tag: '$(oiio.version)+$(build.date)' # Required when action == edit || action == discard || tagSource == manual
+      title: '$(oiio.version)+$(build.date)'
       #releaseNotesSource: 'file' # Optional. Options: file, input
       #releaseNotesFile: # Optional
       #releaseNotes: # Optional
