@@ -23,7 +23,7 @@ jobs:
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
     tests: '$(Agent.BuildDirectory)/s/tests'
-    pypackage.version: '2.0.4+$(Build.BuildNumber)'
+    oiio.version: '2.0.4'
     pypackage.os_name: 'Microsoft :: Windows'
 
   pool:
@@ -50,7 +50,7 @@ jobs:
   # Make setup.py ready by substituting placeholders
   - powershell: |
       cd $(src.python)
-      sed -i 's/PACKAGE_VERSION/$(pypackage.version)/g' setup.py
+      sed -i 's/PACKAGE_VERSION/$(oiio.version)/g' setup.py
       sed -i 's/PYTHON_VERSION/$(python.version)/g' setup.py
       sed -i 's/OS_NAME/$(pypackage.os_name)/g' setup.py
       cat setup.py
@@ -193,7 +193,7 @@ jobs:
       target: '$(build.sourceVersion)' # Required when action == create || action == edit
       tagSource: 'Git tag' # Required when action == create. Options: auto, manual
       tag: '$(oiio.version)+$(build.date)' # Required when action == edit || action == discard || tagSource == manual
-      #title: # Optional
+      title: '$(oiio.version)+$(build.date)'
       #releaseNotesSource: 'file' # Optional. Options: file, input
       #releaseNotesFile: # Optional
       #releaseNotes: # Optional
