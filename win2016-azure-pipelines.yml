@@ -40,6 +40,13 @@ jobs:
       architecture: 'x64'
       addToPath: true
 
+  # Create $(build.date) variable, to be used for GitHub release
+  - powershell: |
+      $Date = Get-Date -format "yyyyMMdd"
+      $DateStr = $Date.ToString()
+      echo "##vso[task.setvariable variable=build.date]$DateStr"
+    displayName: Create build.date variable
+
   # Make setup.py ready by substituting placeholders
   - powershell: |
       cd $(src.python)
@@ -174,3 +181,25 @@ jobs:
       pip list
       pytest --verbose
     displayName: Run rudimental test(s)
+
+  # GitHub Release
+  # Create, edit, or discard a GitHub release.
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/github-release?view=azdevops
+  - task: GithubRelease@0
+    inputs:
+      gitHubConnection: 'oiio-python-releases'
+      repositoryName: 'fredrikaverpil/oiio-python'
+      action: 'edit' # Options: create, edit, discard
+      target: '$(build.sourceVersion)' # Required when action == create || action == edit
+      tagSource: 'Git tag' # Required when action == create. Options: auto, manual
+      tag: '$(oiio.version)+$(build.date)' # Required when action == edit || action == discard || tagSource == manual
+      #title: # Optional
+      #releaseNotesSource: 'file' # Optional. Options: file, input
+      #releaseNotesFile: # Optional
+      #releaseNotes: # Optional
+      # assets: '$(build.artifactStagingDirectory)/*' # Optional
+      # assets: '$(Build.ArtifactStagingDirectory)' # Optional
+      assetUploadMode: 'replace' # Optional. Options: delete, replace
+      #isDraft: false # Optional
+      #isPreRelease: false # Optional
+      addChangeLog: false # Optional
