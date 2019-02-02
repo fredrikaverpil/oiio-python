@@ -23,7 +23,7 @@ jobs:
     src.python: '$(Agent.BuildDirectory)/s/src/python'
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
     tests: '$(Agent.BuildDirectory)/s/tests'
-    oiio.version: '2.0.4'
+    oiio.version: '2.0.5'
     pypackage.os_name: 'Microsoft :: Windows'
 
   pool:
