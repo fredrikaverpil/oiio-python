@@ -34,3 +34,8 @@ See the `tests` folder for code examples used to test the built wheels' function
 - The vcpkg files for oiio at [vcpkg/ports/openimageio](https://github.com/Microsoft/vcpkg/tree/master/ports/openimageio)
 - Get SHA512 of file:
   - macOS: `openssl dgst -sha512 [FILE]`
+- Create release:
+    1. Commit changes: `git commit -am "My changes"`
+    2. Create tag: `git tag [oiio-version]+[yyyymmdd]` (e.g. `2.0.4+20190202`)
+    3. Push tag: `git push origin [oiio-version]+[yyyymmdd]`
+    4. Push changes: `git push`
