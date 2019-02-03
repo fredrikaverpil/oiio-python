@@ -24,7 +24,7 @@ jobs:
     src.vcpkg: '$(Agent.BuildDirectory)/s/src/vcpkg'
     install.vcpkg: 'C:/vcpkg'
     tests: '$(Agent.BuildDirectory)/s/tests'
-    oiio.version: '2.0.4'
+    oiio.version: '2.0.5'
     pypackage.os_name: 'Microsoft :: Windows'
 
   pool:
