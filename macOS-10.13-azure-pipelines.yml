@@ -95,6 +95,7 @@ jobs:
       ./vcpkg install freetype:x64-osx
       # ./vcpkg install giflib:x64-osx  # https://github.com/fredrikaverpil/oiio-python/issues/27
       # ./vcpkg install openjpeg:x64-osx  # https://github.com/fredrikaverpil/oiio-python/issues/26
+      ./vcpkg install libpng:x64-osx
       ./vcpkg install libwebp:x64-osx
       ./vcpkg install ptex:x64-osx
       ./vcpkg list
