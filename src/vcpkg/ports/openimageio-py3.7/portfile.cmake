@@ -24,11 +24,12 @@ else()
     set(LINKSTATIC OFF)
 endif()
 
-# Features
-set(USE_LIBRAW OFF)
-if("libraw" IN_LIST FEATURES)
-    set(USE_LIBRAW ON)
-endif()
+# # Features
+# set(USE_LIBRAW OFF)
+#if("libraw" IN_LIST FEATURES)
+#     set(USE_LIBRAW ON)
+# endif()
+set(USE_LIBRAW ON)
 
 set(ENV{OIIO_PYTHON_VERSION} "3.7")
 
@@ -56,7 +57,7 @@ vcpkg_configure_cmake(
         -DUSE_DICOM=OFF
         -DUSE_FFMPEG=OFF
         -DUSE_FIELD3D=OFF
-        -DUSE_FREETYPE=OFF
+        -DUSE_FREETYPE=ON
         -DUSE_GIF=OFF
         -DUSE_LIBRAW=${USE_LIBRAW}
         -DUSE_NUKE=OFF
@@ -64,10 +65,10 @@ vcpkg_configure_cmake(
         -DUSE_OPENCV=OFF
         -DUSE_OPENJPEG=OFF
         -DUSE_OPENSSL=OFF
-        -DUSE_PTEX=OFF
+        -DUSE_PTEX=ON
         -DUSE_PYTHON=ON
         -DUSE_QT=OFF
-        -DUSE_WEBP=OFF
+        -DUSE_WEBP=ON
         -DBUILDSTATIC=${BUILDSTATIC}
         -DLINKSTATIC=${LINKSTATIC}
         -DBUILD_MISSING_PYBIND11=ON
