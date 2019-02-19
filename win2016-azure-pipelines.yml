@@ -8,6 +8,10 @@ jobs:
 
   strategy:
     matrix:
+      windows-py27:
+        python.version_major: '2'
+        python.version_minor: '7'
+        python.version_patch: '15'
       windows-py36:
         python.version_major: '3'
         python.version_minor: '6'
@@ -74,6 +78,12 @@ jobs:
       cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* C:/vcpkg/ports/openimageio
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* C:/vcpkg/ports/pybind11
     condition: eq( variables['Agent.OS'], 'Windows_NT' )
+    displayName: Override vcpkg port files
+
+  # Copy customized python2 port into place
+  - powershell: |
+      cp -r -v $(src.vcpkg)/ports/python2-py$(python.version).$(python.version_patch)/* C:/vcpkg/ports/python2
+    condition: eq(variables['python.version'], '2.7')
     displayName: Override vcpkg port files
 
   # Install Python Interpreter to default location
