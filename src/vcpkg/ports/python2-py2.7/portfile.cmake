@@ -19,7 +19,7 @@ vcpkg_download_distfile(
     PYTHON_ARCHIVE
     URLS https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz
     FILENAME Python-${PYTHON_VERSION}.tar.xz
-    SHA512 27ea43eb45fc68f3d2469d5f07636e10801dee11635a430ec8ec922ed790bb426b072da94df885e4dfa1ea8b7a24f2f56dd92f9b0f51e162330f161216bd6de6
+    SHA512 78310b0be6388ffa15f29a80afb9ab3c03a572cb094e9da00cfe391afadb51696e41f592eb658d6a31a2f422fdac8a55214a382cbb8cfb43d4a127d5b35ea7f9
 )
 
 vcpkg_extract_source_archive(${PYTHON_ARCHIVE})
