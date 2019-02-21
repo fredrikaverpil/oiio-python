@@ -12,7 +12,7 @@ jobs:
       macos-py27:
         python.version_major: '2'
         python.version_minor: '7'
-        python.version_patch: '14'
+        python.version_patch: '15'
       macos-py36:
         python.version_major: '3'
         python.version_minor: '6'
