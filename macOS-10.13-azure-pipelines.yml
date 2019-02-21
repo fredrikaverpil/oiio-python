@@ -9,6 +9,10 @@ jobs:
 
   strategy:
     matrix:
+      macos-py27:
+        python.version_major: '2'
+        python.version_minor: '7'
+        python.version_patch: '14'
       macos-py36:
         python.version_major: '3'
         python.version_minor: '6'
@@ -78,6 +82,12 @@ jobs:
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
     displayName: Override vcpkg port files
 
+  # Copy customized python2 port into place
+  - powershell: |
+      cp -r -v $(src.vcpkg)/ports/python2-py$(python.version)/* C:/vcpkg/ports/python2
+    condition: eq(variables['python.version'], '2.7')
+    displayName: Override vcpkg python2 port files
+
   # Install python3 and pybind11 via vcpkg
   - bash: |
       cd $(install.vcpkg)
@@ -85,7 +95,18 @@ jobs:
       ./vcpkg install python3:x64-osx
       ./vcpkg install pybind11:x64-osx
       ./vcpkg list
+    condition: ne(variables['python.version'], '2.7')
     displayName: Install python3 and pybind11
+
+  # Install python2 and pybind11 via vcpkg
+  - bash: |
+      cd $(install.vcpkg)
+      ./vcpkg list
+      ./vcpkg install python3:x64-osx
+      ./vcpkg install pybind11:x64-osx
+      ./vcpkg list
+    condition: eq(variables['python.version'], '2.7')
+    displayName: Install python2 and pybind11
 
   # Install oiio prerequisites via vcpkg
   - bash: |

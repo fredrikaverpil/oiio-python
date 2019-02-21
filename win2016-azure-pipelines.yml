@@ -82,7 +82,7 @@ jobs:
 
   # Copy customized python2 port into place
   - powershell: |
-      cp -r -v $(src.vcpkg)/ports/python2-py$(python.version).$(python.version_patch)/* C:/vcpkg/ports/python2
+      cp -r -v $(src.vcpkg)/ports/python2-py$(python.version)/* C:/vcpkg/ports/python2
     condition: eq(variables['python.version'], '2.7')
     displayName: Override vcpkg python2 port files
 
