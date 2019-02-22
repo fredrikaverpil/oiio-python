@@ -8,6 +8,10 @@ jobs:
 
   strategy:
     matrix:
+      windows-py27:
+        python.version_major: '2'
+        python.version_minor: '7'
+        python.version_patch: '14'
       ubuntu-py36:
         python.version_major: '3'
         python.version_minor: '6'
@@ -80,6 +84,12 @@ jobs:
       cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
     displayName: Override vcpkg port files
 
+  # Copy customized python2 port into place
+  - powershell: |
+      cp -r -v $(src.vcpkg)/ports/python2-py$(python.version).$(python.version_patch)/* $(install.vcpkg)/ports/python2
+    condition: eq(variables['python.version'], '2.7')
+    displayName: Override vcpkg python2 port files
+
   # Install oiio prerequisites via vcpkg
   # - bash: |
   #     cd vcpkg
@@ -101,6 +111,19 @@ jobs:
       ./vcpkg install pybind11:x64-linux
       ./vcpkg install openimageio:x64-linux
       ./vcpkg list
+    condition: ne(variables['python.version'], '2.7')
+    displayName: Install oiio
+
+  # Install oiio
+  - bash: |
+      $env:OIIO_PYTHON_VERSION = "$(python.version)"
+      cd vcpkg
+      ./vcpkg list
+      ./vcpkg install python2:x64-linux
+      ./vcpkg install pybind11:x64-linux
+      ./vcpkg install openimageio:x64-linux
+      ./vcpkg list
+    condition: eq(variables['python.version'], '2.7')
     displayName: Install oiio
 
   # Debug Logs

@@ -84,7 +84,7 @@ jobs:
 
   # Copy customized python2 port into place
   - powershell: |
-      cp -r -v $(src.vcpkg)/ports/python2-py$(python.version)/* $(install.vcpkg)/ports/python2
+      cp -r -v $(src.vcpkg)/ports/python2-py$(python.version).$(python.version_patch)/* $(install.vcpkg)/ports/python2
     condition: eq(variables['python.version'], '2.7')
     displayName: Override vcpkg python2 port files
 
@@ -102,7 +102,7 @@ jobs:
   - bash: |
       cd $(install.vcpkg)
       ./vcpkg list
-      ./vcpkg install python3:x64-osx
+      ./vcpkg install python2:x64-osx
       ./vcpkg install pybind11:x64-osx
       ./vcpkg list
     condition: eq(variables['python.version'], '2.7')
