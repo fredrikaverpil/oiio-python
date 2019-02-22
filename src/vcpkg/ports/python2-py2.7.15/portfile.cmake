@@ -71,7 +71,7 @@ else()
 
     message(STATUS "Build ${TARGET_TRIPLET}-dbg")
     vcpkg_execute_required_process(
-        COMMAND make libpython3.6m.a
+        COMMAND make libpython2.7m.a
         WORKING_DIRECTORY ${SOURCE_PATH}
         )
     message(STATUS "Build ${TARGET_TRIPLET}-dbg done")
