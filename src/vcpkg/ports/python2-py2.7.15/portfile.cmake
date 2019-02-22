@@ -26,25 +26,25 @@ vcpkg_extract_source_archive(${PYTHON_ARCHIVE})
 
 set(_PYTHON_PATCHES "")
 if(WIN32)
-if (VCPKG_LIBRARY_LINKAGE STREQUAL static)
-    list(APPEND _PYTHON_PATCHES
-        ${CMAKE_CURRENT_LIST_DIR}/004-static-library-msvc.patch
-        ${CMAKE_CURRENT_LIST_DIR}/006-static-fix-headers.patch
-    )
-endif()
-if (VCPKG_CRT_LINKAGE STREQUAL static)
-    list(APPEND _PYTHON_PATCHES ${CMAKE_CURRENT_LIST_DIR}/005-static-crt-msvc.patch)
-endif()
+    if (VCPKG_LIBRARY_LINKAGE STREQUAL static)
+        list(APPEND _PYTHON_PATCHES
+            ${CMAKE_CURRENT_LIST_DIR}/004-static-library-msvc.patch
+            ${CMAKE_CURRENT_LIST_DIR}/006-static-fix-headers.patch
+        )
+    endif()
+    if (VCPKG_CRT_LINKAGE STREQUAL static)
+        list(APPEND _PYTHON_PATCHES ${CMAKE_CURRENT_LIST_DIR}/005-static-crt-msvc.patch)
+    endif()
 
-vcpkg_apply_patches(
-    SOURCE_PATH ${SOURCE_PATH}
-    PATCHES
-        ${CMAKE_CURRENT_LIST_DIR}/001-build-msvc.patch
-        ${CMAKE_CURRENT_LIST_DIR}/002-build-msvc.patch
-        ${CMAKE_CURRENT_LIST_DIR}/003-build-msvc.patch
-        ${_PYTHON_PATCHES}
-        ${CMAKE_CURRENT_LIST_DIR}/007-fix-build-path.patch
-)
+    vcpkg_apply_patches(
+        SOURCE_PATH ${SOURCE_PATH}
+        PATCHES
+            ${CMAKE_CURRENT_LIST_DIR}/001-build-msvc.patch
+            ${CMAKE_CURRENT_LIST_DIR}/002-build-msvc.patch
+            ${CMAKE_CURRENT_LIST_DIR}/003-build-msvc.patch
+            ${_PYTHON_PATCHES}
+            ${CMAKE_CURRENT_LIST_DIR}/007-fix-build-path.patch
+    )
 endif()
 
 if (VCPKG_TARGET_ARCHITECTURE MATCHES "x86")
@@ -58,23 +58,23 @@ else()
 endif()
 
 if(WIN32)
-vcpkg_build_msbuild(
-    PROJECT_PATH ${SOURCE_PATH}/PCBuild/pythoncore.vcxproj
-    PLATFORM ${BUILD_ARCH})
+    vcpkg_build_msbuild(
+        PROJECT_PATH ${SOURCE_PATH}/PCBuild/pythoncore.vcxproj
+        PLATFORM ${BUILD_ARCH})
 else()
-message(STATUS "Configure ${TARGET_TRIPLET}-dbg")
-vcpkg_execute_required_process(
-    COMMAND ./configure --enable-shared
-    WORKING_DIRECTORY ${SOURCE_PATH}
-    )
-message(STATUS "Configure ${TARGET_TRIPLET}-dbg done")
+    message(STATUS "Configure ${TARGET_TRIPLET}-dbg")
+    vcpkg_execute_required_process(
+        COMMAND ./configure --enable-shared
+        WORKING_DIRECTORY ${SOURCE_PATH}
+        )
+    message(STATUS "Configure ${TARGET_TRIPLET}-dbg done")
 
-message(STATUS "Build ${TARGET_TRIPLET}-dbg")
-vcpkg_execute_required_process(
-    COMMAND make libpython3.6m.a
-    WORKING_DIRECTORY ${SOURCE_PATH}
-    )
-message(STATUS "Build ${TARGET_TRIPLET}-dbg done")
+    message(STATUS "Build ${TARGET_TRIPLET}-dbg")
+    vcpkg_execute_required_process(
+        COMMAND make libpython3.6m.a
+        WORKING_DIRECTORY ${SOURCE_PATH}
+        )
+    message(STATUS "Build ${TARGET_TRIPLET}-dbg done")
 endif()
 
 if (VCPKG_LIBRARY_LINKAGE STREQUAL static)

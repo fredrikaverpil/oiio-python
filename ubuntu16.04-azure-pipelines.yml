@@ -120,6 +120,7 @@ jobs:
       cd vcpkg
       ./vcpkg list
       sudo ./vcpkg install python2:x64-linux
+      [ -f $(install.vcpkg)/buildtrees/python2/config-x64-linux-rel-out.log ] && cat $(install.vcpkg)/buildtrees/python2/config-x64-linux-rel-out.log || echo "Not found"
       [ -f $(install.vcpkg)/buildtrees/python2/build-x64-linux-rel-out.log ] && cat $(install.vcpkg)/buildtrees/python2/build-x64-linux-rel-out.log || echo "Not found"
       sudo ./vcpkg install pybind11:x64-linux
       sudo ./vcpkg install openimageio:x64-linux
