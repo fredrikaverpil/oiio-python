@@ -25,7 +25,7 @@ vcpkg_download_distfile(
 vcpkg_extract_source_archive(${PYTHON_ARCHIVE})
 
 set(_PYTHON_PATCHES "")
-
+if(WIN32)
 if (VCPKG_LIBRARY_LINKAGE STREQUAL static)
     list(APPEND _PYTHON_PATCHES
         ${CMAKE_CURRENT_LIST_DIR}/004-static-library-msvc.patch
@@ -45,6 +45,7 @@ vcpkg_apply_patches(
         ${_PYTHON_PATCHES}
         ${CMAKE_CURRENT_LIST_DIR}/007-fix-build-path.patch
 )
+endif()
 
 if (VCPKG_TARGET_ARCHITECTURE MATCHES "x86")
     set(BUILD_ARCH "Win32")
@@ -56,20 +57,52 @@ else()
     message(FATAL_ERROR "Unsupported architecture: ${VCPKG_TARGET_ARCHITECTURE}")
 endif()
 
+if(WIN32)
 vcpkg_build_msbuild(
     PROJECT_PATH ${SOURCE_PATH}/PCBuild/pythoncore.vcxproj
     PLATFORM ${BUILD_ARCH})
+else()
+message(STATUS "Configure ${TARGET_TRIPLET}-dbg")
+vcpkg_execute_required_process(
+    COMMAND ./configure --enable-shared
+    WORKING_DIRECTORY ${SOURCE_PATH}
+    )
+message(STATUS "Configure ${TARGET_TRIPLET}-dbg done")
+
+message(STATUS "Build ${TARGET_TRIPLET}-dbg")
+vcpkg_execute_required_process(
+    COMMAND make libpython3.6m.a
+    WORKING_DIRECTORY ${SOURCE_PATH}
+    )
+message(STATUS "Build ${TARGET_TRIPLET}-dbg done")
+endif()
+
+if (VCPKG_LIBRARY_LINKAGE STREQUAL static)
+    vcpkg_apply_patches(
+        SOURCE_PATH ${SOURCE_PATH}
+        PATCHES
+            ${CMAKE_CURRENT_LIST_DIR}/0003-Fix-header-for-static-linkage.patch
+    )
+endif()
 
 file(GLOB HEADERS ${SOURCE_PATH}/Include/*.h)
+if(WIN32)
 file(COPY ${HEADERS} ${SOURCE_PATH}/PC/pyconfig.h DESTINATION ${CURRENT_PACKAGES_DIR}/include/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR})
+else()
+file(COPY ${HEADERS} ${SOURCE_PATH}/pyconfig.h DESTINATION ${CURRENT_PACKAGES_DIR}/include/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR})
+endif()
 
 file(COPY ${SOURCE_PATH}/Lib DESTINATION ${CURRENT_PACKAGES_DIR}/share/python${PYTHON_VERSION_MAJOR})
 
+if(WIN32)
 file(COPY ${SOURCE_PATH}/PCBuild/${OUT_DIR}/python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}.lib DESTINATION ${CURRENT_PACKAGES_DIR}/lib)
 file(COPY ${SOURCE_PATH}/PCBuild/${OUT_DIR}/python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}_d.lib DESTINATION ${CURRENT_PACKAGES_DIR}/debug/lib)
 if (VCPKG_LIBRARY_LINKAGE STREQUAL dynamic)
     file(COPY ${SOURCE_PATH}/PCBuild/${OUT_DIR}/python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}.dll DESTINATION ${CURRENT_PACKAGES_DIR}/bin)
     file(COPY ${SOURCE_PATH}/PCBuild/${OUT_DIR}/python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}_d.dll DESTINATION ${CURRENT_PACKAGES_DIR}/debug/bin)
+endif()
+else()
+file(COPY ${SOURCE_PATH}/libpython${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}m.a DESTINATION ${CURRENT_PACKAGES_DIR}/lib)
 endif()
 
 # Handle copyright
