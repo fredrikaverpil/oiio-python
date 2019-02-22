@@ -73,7 +73,6 @@ jobs:
       cd vcpkg
       ./bootstrap-vcpkg.sh
       ./vcpkg integrate install
-      ./vcpkg update
       pwd
     displayName: Install vcpkg
 
@@ -107,9 +106,9 @@ jobs:
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd vcpkg
       ./vcpkg list
-      ./vcpkg install python3:x64-linux
-      ./vcpkg install pybind11:x64-linux
-      ./vcpkg install openimageio:x64-linux
+      sudo ./vcpkg install python3:x64-linux
+      sudo ./vcpkg install pybind11:x64-linux
+      sudo ./vcpkg install openimageio:x64-linux
       ./vcpkg list
     condition: ne(variables['python.version'], '2.7')
     displayName: Install oiio
@@ -119,9 +118,9 @@ jobs:
       $env:OIIO_PYTHON_VERSION = "$(python.version)"
       cd vcpkg
       ./vcpkg list
-      ./vcpkg install python2:x64-linux
-      ./vcpkg install pybind11:x64-linux
-      ./vcpkg install openimageio:x64-linux
+      sudo ./vcpkg install python2:x64-linux
+      sudo ./vcpkg install pybind11:x64-linux
+      sudo ./vcpkg install openimageio:x64-linux
       ./vcpkg list
     condition: eq(variables['python.version'], '2.7')
     displayName: Install oiio
