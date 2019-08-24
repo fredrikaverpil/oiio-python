@@ -9,14 +9,10 @@ jobs:
 
   strategy:
     matrix:
-      macos-py36:
-        python.version_major: '3'
-        python.version_minor: '6'
-        python.version_patch: '5'
       macos-py37:
         python.version_major: '3'
         python.version_minor: '7'
-        python.version_patch: '0'
+        python.version_patch: '4'
 
   variables:
     python.version: '$(python.version_major).$(python.version_minor)'
@@ -71,12 +67,12 @@ jobs:
       ./vcpkg integrate install
     displayName: Install vcpkg
 
-  # Copy customized port(s) into place
-  - bash: |
-      cp -r -v $(src.vcpkg)/ports/python3-py$(python.version).$(python.version_patch)/* $(install.vcpkg)/ports/python3
-      cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
-      cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
-    displayName: Override vcpkg port files
+  # # Copy customized port(s) into place
+  # - bash: |
+  #     cp -r -v $(src.vcpkg)/ports/python3-py$(python.version).$(python.version_patch)/* $(install.vcpkg)/ports/python3
+  #     cp -r -v $(src.vcpkg)/ports/openimageio-py$(python.version)/* $(install.vcpkg)/ports/openimageio
+  #     cp -r -v $(src.vcpkg)/ports/pybind11-py$(python.version)/* $(install.vcpkg)/ports/pybind11
+  #   displayName: Override vcpkg port files
 
   # Install python3 and pybind11 via vcpkg
   - bash: |
